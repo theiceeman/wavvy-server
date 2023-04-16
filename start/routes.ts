@@ -25,13 +25,21 @@ Route.get('/', async () => {
 })
 
 
-Route.get('/user/:walletAddress', 'UsersController.create')
-
-Route.get('/token/details/:address/:id', 'UsersController.create')
+Route.post('/user/:walletAddress', 'UsersController.create')
 
 
 
-Route.post('/collection/new', 'CollectionsController.create')
+Route.group(() => {
+  Route.post('/new', 'CollectionsController.create')
+  Route.post('/status/:id', 'CollectionsController.status')
+  Route.get('/view', 'CollectionsController.view')
+}).prefix('/collection')
+
+
+Route.group(() => {
+  // collectionAddress, tokenId
+  Route.get('/get/:collectionAddress/:tokenId', 'TokenController.view')
+}).prefix('/tokens')
 
 
 

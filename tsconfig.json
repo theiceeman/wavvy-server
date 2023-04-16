@@ -30,6 +30,7 @@
       "@adonisjs/repl",
       "@japa/preset-adonis/build/adonis-typings",
       "@adonisjs/lucid"
-    ]
+    ],
+    "resolveJsonModule": true,
   }
 }
