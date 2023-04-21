@@ -8,6 +8,8 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('unique_id').unique()
+      table.string('address')
+      table.string('network')
       table.string('name')
       table.string('description')
       table.string('avatar')

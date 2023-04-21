@@ -32,13 +32,12 @@ Route.post('/user/:walletAddress', 'UsersController.create')
 Route.group(() => {
   Route.post('/new', 'CollectionsController.create')
   Route.post('/status/:id', 'CollectionsController.status')
-  Route.get('/view', 'CollectionsController.view')
-}).prefix('/collection')
+  Route.get('/active', 'CollectionsController.view')
+}).prefix('/collections')
 
 
 Route.group(() => {
-  // collectionAddress, tokenId
-  Route.get('/get/:collectionAddress/:tokenId', 'TokenController.view')
+  Route.get('/get/:collectionId/:tokenId', 'TokensController.tokenDetails')
 }).prefix('/tokens')
 
 

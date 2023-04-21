@@ -10,6 +10,12 @@ export default class Collection extends BaseModel {
   public uniqueId: string = genRandomUuid()
 
   @column()
+  public address: string
+
+  @column()
+  public network: string
+
+  @column()
   public name: string
 
   @column()

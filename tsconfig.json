@@ -32,5 +32,6 @@
       "@adonisjs/lucid"
     ],
     "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }

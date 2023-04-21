@@ -16,14 +16,18 @@ export default class CollectionsController {
 
       let collection = await new AlchemyApi()
         .getCollectionDetails(data.address, data.network)
+        // return collection
 
       let result = await Collection.create({
+        address:data.address,
+        network: data.network,
         name: collection.name,
         description: collection.description,
         avatar: collection.avatar,
+        owner:'zzz',
         noOfItems: collection.items,
-        totalVolume: '0',
-        floorPrice: collection.floor_price,
+        totalVolume: 'zzz',
+        floorPrice: collection.floorPrice,
         website: collection.website,
         status: 'active'
       });
