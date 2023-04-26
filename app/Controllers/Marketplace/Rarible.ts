@@ -42,9 +42,8 @@ export default class Rarible {
         throw new Error('rarible api unavailable!')
       let data = response.data.data;
 
-      if (data.orders.length < 1) {
+      if (data.orders.length < 1)
         throw new Error('No sell orders for token!')
-      }
 
       let floorPrice, floorPriceCurrency, saleStatus, orderId;
       data.orders.forEach(e => {
@@ -55,10 +54,8 @@ export default class Rarible {
           orderId = e.id;
         }
       });
-      if(saleStatus !== 'ACTIVE'){
+      if(saleStatus !== 'ACTIVE')
         throw new Error("No active sell orders for token!");
-
-      }
 
       return { floorPrice, floorPriceCurrency, saleStatus, orderId }
 
@@ -74,24 +71,7 @@ export default class Rarible {
 
   }
 
-  private getTokenById(collectionAddress, tokenId) {
-    let url;
-    switch (this.network) {
-      case 'ethereum':
-        url = `https://api.rarible.org/v0.1/items/ETHEREUM:${collectionAddress}:${tokenId}`;
-        break;
-
-      case 'matic':
-        url = `https://api.rarible.org/v0.1/items/POLYGON:${collectionAddress}:${tokenId}`;
-        break;
-
-      default:
-        break;
-    }
-    return url;
-  }
   private getSellByItem(collectionAddress, tokenId) {
-    // https://api.rarible.org/v0.1/orders/sell/byItem?itemId=ETHEREUM:0xf48b45479ba7e121a3542626d5a5f3b07ec5b65d:669
     let url;
     switch (this.network) {
       case 'ethereum':

@@ -1,7 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AlchemyApi from '../Marketplace/AlchemyApi';
 import Database from '@ioc:Adonis/Lucid/Database';
-import { genRandomEOAWallet } from '../Helpers/ethers';
 import Rarible from '../Marketplace/Rarible';
 import { formatErrorMessage } from '../Helpers/utils';
 

@@ -16,7 +16,6 @@ export default class CollectionsController {
 
       let collection = await new AlchemyApi()
         .getCollectionDetails(data.address, data.network)
-        // return collection
 
       let result = await Collection.create({
         address:data.address,
@@ -67,7 +66,6 @@ export default class CollectionsController {
   }
 
   public async view({
-    params,
     response,
   }: HttpContextContract) {
     try {
