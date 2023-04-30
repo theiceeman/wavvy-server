@@ -4,6 +4,7 @@ import Pool from 'App/Models/Pool';
 import { formatErrorMessage } from '../Helpers/utils';
 import Database from '@ioc:Adonis/Lucid/Database';
 import PoolFundingsController from './PoolFundingsController';
+import LoansController from './LoansController';
 
 export default class PoolsController {
 
@@ -13,14 +14,14 @@ export default class PoolsController {
       await this.validate(request)
 
       let result = await Pool.create({
-        poolId: data.poolId,
+        contractPoolId: data.poolId,
         creatorId: data.creatorId,
         // amount: data.amount,
         paymentCycle: data.paymentCycle,
         apr: data.apr,
         durationInSecs: data.durationInSecs,
         durationInMonths: data.durationInMonths,
-        status: 'active'
+        status: 'open'
       });
 
       if (result !== null) {
@@ -45,6 +46,10 @@ export default class PoolsController {
       let data = await Database.from("pools")
         .where('unique_id', params.uniqueId)
 
+      let totalAmount = await new PoolFundingsController()
+        .totalFundsInPool(data[0].pool_id)
+      data[0].volume = totalAmount
+
       response.status(200).json({ data });
     } catch (error) {
       response.status(400).json({ data: error.message });
@@ -57,13 +62,12 @@ export default class PoolsController {
   }: HttpContextContract) {
     try {
       let data = await Database.from("pools")
-        .where('status', 'active')
+        .where('status', 'open')
 
       for (const each of data) {
         let totalAmount = await new PoolFundingsController()
-          .totalFundsInPool(each.pool_id)
-          console.log({totalAmount})
-        each.amount = totalAmount
+          .totalFundsInPool(each.contract_pool_id)
+        each.volume = totalAmount
       }
 
       response.status(200).json({ data });
@@ -81,6 +85,12 @@ export default class PoolsController {
       let data = await Database.from("pools")
         .where('creator_id', params.userAddress)
 
+      for (const each of data) {
+        let totalAmount = await new PoolFundingsController()
+          .totalFundsInPool(each.contract_pool_id)
+        each.volume = totalAmount
+      }
+
       response.status(200).json({ data });
     } catch (error) {
       response.status(400).json({ data: error.message });
@@ -97,7 +107,7 @@ export default class PoolsController {
         throw new Error("pool doesnt exist!");
 
 
-      let status = pool[0].status == 'active' ? 'closed' : 'active';
+      let status = pool[0].status == 'open' ? 'closed' : 'open';
       let result = await Pool
         .query()
         .where("unique_id", uniqueId)
@@ -112,6 +122,27 @@ export default class PoolsController {
     } catch (error) {
       response.status(400).json({ data: await formatErrorMessage(error) })
     }
+  }
+
+
+  public async totalVolumeInPools() {
+    let totalVolume = 0;
+    let pool = await Database.from("pools")
+
+    for (const each of pool) {
+      let volumeInPool = await new PoolFundingsController()
+        .totalFundsInPool(each.contract_pool_id)
+      totalVolume += volumeInPool
+    }
+
+    return totalVolume;
+  }
+
+  public async totalVolumeAvailableInPools() {
+    // total_available = total_vol - total_borrowed
+    let totalVolume = await this.totalVolumeInPools();
+    let totalBorrowed = await new LoansController().totalLoansBorrowed()
+    return totalVolume - totalBorrowed;
   }
 
 

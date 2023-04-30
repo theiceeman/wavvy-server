@@ -2,16 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { genRandomUuid } from 'App/Controllers/Helpers/utils'
 
-/*
-contractPoolId
-escrowAddress
-tokenAddress
-token_id
-down_payment
-principal
-
- */
-export default class Purchase extends BaseModel {
+export default class Loan extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -19,16 +10,22 @@ export default class Purchase extends BaseModel {
   public uniqueId: string = genRandomUuid()
 
   @column()
-  public orderId: string
-
-  @column()
-  public contractPurchaseId: string
+  public contractLoanId: string
 
   @column()
   public contractPoolId: string
 
   @column()
-  public status: string
+  public borrower: string
+
+  @column()
+  public principal: string
+
+  @column()
+  public blockTimestamp: string
+
+  @column()
+  public status: 'open' | 'closed'
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

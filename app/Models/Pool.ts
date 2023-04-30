@@ -22,7 +22,7 @@ export default class Pool extends BaseModel {
   public uniqueId: string = genRandomUuid()
 
   @column()
-  public poolId: string
+  public contractPoolId: string
 
   @column()
   public creatorId: string
@@ -43,7 +43,7 @@ export default class Pool extends BaseModel {
   public durationInMonths: number
 
   @column()
-  public status: 'active' | 'closed'
+  public status: 'open' | 'closed'
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

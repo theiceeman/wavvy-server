@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.string('address')
       table.string('network')
       table.string('name')
-      table.string('description')
+      table.text('description')
       table.string('avatar')
       table.string('owner')
       table.string('no_of_items')

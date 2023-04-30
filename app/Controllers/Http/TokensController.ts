@@ -8,7 +8,7 @@ export default class TokensController {
 
 
   // input: collectionAddress, tokenId
-  // returns: tokenAvatar, floorPrice, loanPrice, saleStatus
+  // returns: tokenAvatar, floorPrice, loanPrice, saleStatus, orderId
   public async tokenDetails({ params, response }: HttpContextContract) {
     try {
       const { collectionId, tokenId } = params;

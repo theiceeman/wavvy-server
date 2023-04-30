@@ -41,23 +41,29 @@ Route.group(() => {
 
 
 Route.group(() => {
-  // orderId, chainPurchaseId
-  // Route.post('/create/:collectionId/:tokenId', 'TokensController.tokenDetails')
+  // buy with qredos modal endpoint
+  Route.post('/create', 'PurchasesController.create')
+  // update purchase status
 }).prefix('/purchase')
 
 
 Route.group(() => {
-  Route.post('/create', 'PoolsController.create')
-  Route.post('/status/:uniqueId', 'PoolsController.status')
-  Route.post('/fund/:poolId', 'PoolFundingsController.create')   // poolId is pool_contract_id
+  Route.get('/totalVolume', 'PoolsController.totalVolumeInPools')
+  Route.get('/totalLiquidityBorrowed', 'LoansController.totalLoansBorrowed')
+  Route.get('/totalLiquidityAvailable', 'PoolsController.totalVolumeAvailableInPools')
 
   Route.get('/', 'PoolsController.view')
   Route.get('/:uniqueId', 'PoolsController.single') // get single pool detail
   Route.get('/user/:userAddress', 'PoolsController.user') // get all pools by a user
 
+  Route.post('/create', 'PoolsController.create')
+  Route.post('/status/:uniqueId', 'PoolsController.status')
+  Route.post('/fund/:contractPoolId', 'PoolFundingsController.create')
+
+
   // total volume
-  // liquidity borrowed
-  // liquidity available
+  // total liquidity borrowed
+  // total liquidity available
 }).prefix('/pools')
 
 //

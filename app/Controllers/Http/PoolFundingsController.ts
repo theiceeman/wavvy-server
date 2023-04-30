@@ -12,7 +12,7 @@ export default class PoolFundingsController {
       await this.validate(request)
 
       let result = await PoolFunding.create({
-        poolId: data.poolId,
+        contractPoolId: data.contractPoolId,
         amount: data.amount
       });
 
@@ -30,7 +30,7 @@ export default class PoolFundingsController {
   public async totalFundsInPool(poolId) {
     let amount = 0;
     let data = await Database.from("pool_fundings")
-      .where('pool_id', poolId)
+      .where('contract_pool_id', poolId)
     if (data.length < 1)
       return 0
 
@@ -43,7 +43,7 @@ export default class PoolFundingsController {
 
   private async validate(request) {
     const Schema = schema.create({
-      poolId: schema.string(),
+      contractPoolId: schema.string(),
       amount: schema.number(),
     })
     await request.validate({ schema: Schema });

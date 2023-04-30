@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('unique_id').unique()
-      table.string('pool_id').unique()   //  id on smart contract
+      table.string('contract_pool_id').unique()   //  id on smart contract
       table.string('creator_id')
       // table.integer('amount')
       table.string('payment_cycle')
