@@ -1,5 +1,26 @@
 
 import { v4 as uuidv4 } from 'uuid';
+import Env from '@ioc:Adonis/Core/Env'
+
+
+export  function getRpcUrl(network){
+  let url
+  switch (network) {
+    case 'ethereum':
+      url = Env.get('MAINNET_PROVIDER');
+      break;
+    case 'matic':
+      url = Env.get('MATIC_PROVIDER');
+      break;
+    case 'mumbai':
+      url = Env.get('MUMBAI_PROVIDER');
+      break;
+    default:
+      break;
+  }
+  return url;
+
+}
 
 
 export async function formatErrorMessage(error) {
