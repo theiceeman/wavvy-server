@@ -3,7 +3,6 @@ import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 export default class extends BaseSchema {
   protected tableName = 'collections'
 
-  // returns: name, description, avatar, *owner, items, *total_volume, floor_price, website.
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()

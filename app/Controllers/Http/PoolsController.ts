@@ -13,10 +13,17 @@ export default class PoolsController {
       const data = request.body();
       await this.validate(request)
 
+
+      let pool = await Pool.query()
+        .where("contractPoolId", data.contractPoolId)
+        .where("network", data.network)
+      if (pool.length !== 0)
+        throw new Error("pool created for this network previously!");
+
       let result = await Pool.create({
-        contractPoolId: data.poolId,
+        contractPoolId: data.contractPoolId,
         creatorId: data.creatorId,
-        // amount: data.amount,
+        network: data.network,
         paymentCycle: data.paymentCycle,
         apr: data.apr,
         durationInSecs: data.durationInSecs,
@@ -148,9 +155,9 @@ export default class PoolsController {
 
   private async validate(request) {
     const Schema = schema.create({
-      poolId: schema.string(),
+      contractPoolId: schema.string(),
       creatorId: schema.string(),
-      // amount: schema.number(),
+      network: schema.string(),
       paymentCycle: schema.string(),
       apr: schema.number(),
       durationInSecs: schema.number(),

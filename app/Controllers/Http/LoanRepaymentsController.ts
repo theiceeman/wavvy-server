@@ -2,8 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import LoanRepayment from "App/Models/LoanRepayment";
 import { convertIsoTimestampToDate, convertTimestampInSecsToDate, convertTimestampToSeconds, formatErrorMessage } from "../Helpers/utils";
 import Database from '@ioc:Adonis/Lucid/Database';
-import PoolRegistry from '../Helpers/contract-methods';
-import { supportedChains } from '../Helpers/ethers';
+import PoolRegistry from '../Blockchain/contracts/PoolRegistry';
 
 export default class LoanRepaymentsController {
 
@@ -17,6 +16,7 @@ export default class LoanRepaymentsController {
         contractLoanRepaymentId: data.contractLoanRepaymentId,
         amount: data.amount,
         type: data.type,
+        // txnHash
       });
 
       if (result !== null) {
@@ -30,7 +30,7 @@ export default class LoanRepaymentsController {
     }
   }
 
-
+  // partPay, fullPay
   public async amountToPay({
     params,
     response,
@@ -39,11 +39,14 @@ export default class LoanRepaymentsController {
       let loan = await Database.from("loans")
         .where('unique_id', params.loanUniqueId)
 
-      await new PoolRegistry(supportedChains.polygonMumbai)._calcLoanPartPayment('0', '0'); return;
+      let partPayment = await new PoolRegistry(loan[0].network)
+        ._calcLoanPartPayment(loan[0].contract_loan_id, loan[0].contract_pool_id);
+      let fullPayment = await new PoolRegistry(loan[0].network)
+        ._calcLoanFullPayment(loan[0].contract_loan_id, loan[0].contract_pool_id);
 
 
 
-      // response.status(200).json({ data: timeline });
+      response.status(200).json({ data: { partPayment, fullPayment } });
     } catch (error) {
       response.status(400).json({ data: error.message });
     }

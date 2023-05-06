@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { genRandomUuid } from 'App/Controllers/Helpers/utils'
+import { supportedChains } from 'App/Controllers/Blockchain/ethers'
 
 /*
 contractPoolId
@@ -17,6 +18,9 @@ export default class Purchase extends BaseModel {
 
   @column()
   public uniqueId: string = genRandomUuid()
+
+  @column()
+  public network: supportedChains
 
   @column()
   public orderId: string

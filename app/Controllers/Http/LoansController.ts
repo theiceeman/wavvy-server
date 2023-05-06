@@ -14,6 +14,7 @@ export default class LoansController {
       await this.validate(request)
 
       let result = await Loan.create({
+        network: data.network,
         contractLoanId: data.contractLoanId,
         contractPoolId: data.contractPoolId,
         borrower: data.borrower,

@@ -12,11 +12,11 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('unique_id').unique()
-      table.string('contract_loan_repayment_id')
-      table.string('contract_loan_id')
-      table.string('contract_pool_id')
-      table.integer('amount')
-      table.string('type')
+      table.string('contract_loan_repayment_id').notNullable()
+      table.string('contract_loan_id').notNullable()
+      table.string('contract_pool_id').notNullable()
+      table.integer('amount').notNullable()
+      table.string('type').notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

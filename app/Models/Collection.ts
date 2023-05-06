@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { genRandomUuid } from 'App/Controllers/Helpers/utils'
+import { supportedChains } from 'App/Controllers/Blockchain/ethers'
 
 export default class Collection extends BaseModel {
   @column({ isPrimary: true })
@@ -13,7 +14,7 @@ export default class Collection extends BaseModel {
   public address: string
 
   @column()
-  public network: string
+  public network: supportedChains
 
   @column()
   public name: string

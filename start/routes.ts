@@ -19,6 +19,7 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import Indexer from 'App/Controllers/Blockchain/Indexer'
 
 Route.get('/', async () => {
   return { hello: 'world' }
@@ -43,6 +44,8 @@ Route.group(() => {
 Route.group(() => {
   Route.post('/create', 'PurchasesController.create')
   // update purchase status
+  // user purchases
+  // all purchases - for recent purchase section.
 }).prefix('/purchase')
 
 
@@ -64,12 +67,20 @@ Route.group(() => {
 Route.group(() => {
   // buy with qredos modal endpoint
   Route.get('/terms/:poolUniqueId/:collectionUniqueId/:tokenId', 'LoansController.loanTerms')
-  Route.get('/repayment/timeline/:loanUniqueId', 'LoanRepaymentsController.timeline')
-  Route.get('/repayment/amount/:loanUniqueId', 'LoanRepaymentsController.amountToPay')
-  // amount to pay
-  // past payments
 
   Route.post('/create', 'LoansController.create')
-  Route.post('/repayment', 'LoanRepaymentsController.create')
-  //
 }).prefix('/loan')
+
+
+Route.group(() => {
+  Route.get('/timeline/:loanUniqueId', 'LoanRepaymentsController.timeline')   // loan schedule
+  Route.get('/amount/:loanUniqueId', 'LoanRepaymentsController.amountToPay')
+
+
+  Route.post('/', 'LoanRepaymentsController.create')
+}).prefix('/repayment')
+
+
+Route.get('/test', async () => {
+  new Indexer().test()
+})

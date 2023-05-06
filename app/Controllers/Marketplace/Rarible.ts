@@ -4,7 +4,7 @@ import { createRaribleSdk } from "@rarible/sdk"
 import { toOrderId } from "@rarible/types"
 // import { EthersEthereum, EthersWeb3ProviderEthereum } from "@rarible/ethers-ethereum"
 import { EthereumWallet } from "@rarible/sdk-wallet"
-import { getClient } from "../Helpers/ethers";
+import { getClient } from "../Blockchain/ethers";
 // import { ethers } from "ethers"
 import { Web3Ethereum } from "@rarible/web3-ethereum"
 import Web3 from "web3";

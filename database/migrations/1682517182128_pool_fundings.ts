@@ -7,8 +7,8 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('unique_id').unique()
-      table.string('contract_pool_id')   //  the pool contract id
-      table.integer('amount')
+      table.string('contract_pool_id').notNullable()   //  the pool contract id
+      table.integer('amount').notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

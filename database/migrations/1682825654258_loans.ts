@@ -14,10 +14,11 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('unique_id').unique()
-      table.string('contract_loan_id')
-      table.string('contract_pool_id')
-      table.string('borrower')
-      table.string('principal')
+      table.string('network').notNullable()
+      table.string('contract_loan_id').notNullable()
+      table.string('contract_pool_id').notNullable()
+      table.string('borrower').notNullable()
+      table.string('principal').notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
