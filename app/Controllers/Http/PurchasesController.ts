@@ -7,11 +7,6 @@ import Database from '@ioc:Adonis/Lucid/Database';
 
 export default class PurchasesController {
 
-  /*
-  make purchase
-  update db
-  */
-  // contract_pool_id, contract_purchase_id, order_id
   public async create({ request, response }: HttpContextContract) {
     try {
       const data = request.body();
@@ -20,10 +15,10 @@ export default class PurchasesController {
 
 
       let res = await new Rarible(network).createPurchase(data.orderId)
-      console.log({ res })
 
       let result = await Purchase.create({
-        orderId: data.orderId,
+        // orderId: data.orderId,
+        network: data.network,
         contractPurchaseId: data.contractPurchaseId,
         contractPoolId: data.contractPoolId,
         status: 'pending'

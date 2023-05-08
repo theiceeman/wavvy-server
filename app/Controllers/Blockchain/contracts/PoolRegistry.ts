@@ -15,7 +15,6 @@ export default class PoolRegistry {
 
   public async _calcLoanPartPayment(loanId, poolId) {
     const data = await this.contract._calcLoanPartPayment(loanId, poolId);
-    // return Number(data.toString(10)) //.toFixed(3);
     return Number(formatEther(data)).toFixed(5)
   }
 
