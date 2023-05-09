@@ -19,19 +19,69 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import Indexer from 'App/Controllers/Blockchain/Indexer'
+import { supportedChains } from 'App/Controllers/Blockchain/ethers'
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
 
 
-Route.get('/user/:walletAddress', 'UsersController.create')
-
-Route.get('/token/details/:address/:id', 'UsersController.create')
+Route.post('/user/:walletAddress', 'UsersController.create')
 
 
+Route.group(() => {
+  Route.post('/new', 'CollectionsController.create')
+  Route.post('/status/:id', 'CollectionsController.status')
+  Route.get('/active', 'CollectionsController.view')
+}).prefix('/collections')
 
-Route.post('/collection/new', 'CollectionsController.create')
+
+Route.group(() => {
+  Route.get('/get/:collectionId/:tokenId', 'TokensController.tokenDetails')
+}).prefix('/tokens')
 
 
+Route.group(() => {
+  Route.post('/create', 'PurchasesController.create')
+  // update purchase status
+  // user purchases
+  // all purchases - for recent purchase section.
+}).prefix('/purchase')
 
+
+Route.group(() => {
+  Route.get('/totalVolume', 'PoolsController.totalVolumeInPools')
+  Route.get('/totalLiquidityBorrowed', 'LoansController.totalLoansBorrowed')
+  Route.get('/totalLiquidityAvailable', 'PoolsController.totalVolumeAvailableInPools')
+
+  Route.get('/', 'PoolsController.view')
+  Route.get('/:uniqueId', 'PoolsController.single')
+  Route.get('/user/:userAddress', 'PoolsController.user')
+
+  Route.post('/create', 'PoolsController.create')
+  Route.post('/status/:uniqueId', 'PoolsController.status')
+  Route.post('/fund', 'PoolFundingsController.create')
+}).prefix('/pools')
+
+
+Route.group(() => {
+  // buy with qredos modal endpoint
+  Route.get('/terms/:poolUniqueId/:collectionUniqueId/:tokenId', 'LoansController.loanTerms')
+
+  Route.post('/create', 'LoansController.create')
+}).prefix('/loan')
+
+
+Route.group(() => {
+  Route.get('/timeline/:loanUniqueId', 'LoanRepaymentsController.timeline')   // loan schedule
+  Route.get('/amount/:loanUniqueId', 'LoanRepaymentsController.amountToPay')
+
+
+  Route.post('/', 'LoanRepaymentsController.create')
+}).prefix('/repayment')
+
+
+// Route.get('/test', async () => {
+//   new Indexer(supportedChains.polygonMumbai).test()
+// })
