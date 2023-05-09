@@ -55,7 +55,7 @@ Route.group(() => {
   Route.get('/totalLiquidityBorrowed', 'LoansController.totalLoansBorrowed')
   Route.get('/totalLiquidityAvailable', 'PoolsController.totalVolumeAvailableInPools')
 
-  Route.get('/', 'PoolsController.view')
+  Route.get('/active', 'PoolsController.viewActive')
   Route.get('/:uniqueId', 'PoolsController.single')
   Route.get('/user/:userAddress', 'PoolsController.user')
 

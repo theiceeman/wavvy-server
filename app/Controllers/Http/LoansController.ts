@@ -66,12 +66,16 @@ export default class LoansController {
 
 
 
-  public async totalLoansBorrowed() {
+  public async totalLoansBorrowed({ request }: HttpContextContract) {
     let volumeBorrowed = 0;
-    let loans = await Database.from("loans")
+    let network = request.header('CLIENT-NETWORK')
+    if (network === undefined) {
+      return 0
+    }
+    let loans = await Database.from("loans").where('network', network)
 
     for (const each of loans) {
-      volumeBorrowed += each.principal
+      volumeBorrowed += Number(each.principal)
     }
 
     return volumeBorrowed

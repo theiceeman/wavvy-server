@@ -15,6 +15,8 @@ export default class TokensController {
 
       let res = await Database.from("collections")
         .where('unique_id', collectionId)
+      if (res.length < 1) throw new Error('collection is not registered!')
+
 
       let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(res[0].address, tokenId, res[0].network)
 
