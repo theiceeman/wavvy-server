@@ -20,6 +20,7 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 import Indexer from 'App/Controllers/Blockchain/Indexer'
+import { supportedChains } from 'App/Controllers/Blockchain/ethers'
 
 Route.get('/', async () => {
   return { hello: 'world' }
@@ -60,7 +61,7 @@ Route.group(() => {
 
   Route.post('/create', 'PoolsController.create')
   Route.post('/status/:uniqueId', 'PoolsController.status')
-  Route.post('/fund/:contractPoolId', 'PoolFundingsController.create')
+  Route.post('/fund', 'PoolFundingsController.create')
 }).prefix('/pools')
 
 
@@ -81,6 +82,6 @@ Route.group(() => {
 }).prefix('/repayment')
 
 
-Route.get('/test', async () => {
-  new Indexer().test()
-})
+// Route.get('/test', async () => {
+//   new Indexer(supportedChains.polygonMumbai).test()
+// })

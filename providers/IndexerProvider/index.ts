@@ -1,5 +1,5 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
-import Indexer from 'App/Controllers/Blockchain/Indexer'
+import { supportedChains } from 'App/Controllers/Blockchain/ethers';
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +21,7 @@ import Indexer from 'App/Controllers/Blockchain/Indexer'
 |
 */
 export default class IndexerProvider {
+  // import Post Model inside class
   constructor(protected app: ApplicationContract) { }
 
   public register() {
@@ -29,11 +30,18 @@ export default class IndexerProvider {
 
   public async boot() {
     // All bindings are ready, feel free to use them
-    new Indexer().listen()
   }
 
   public async ready() {
     // App is ready
+    const Indexer = (await import('App/Controllers/Blockchain/Indexer')).default;
+
+    await new Indexer(supportedChains.polygonMumbai).ethersListeners()
+
+
+    await new Indexer(supportedChains.polygonMumbai).web3Listeners()
+    await new Indexer(supportedChains.polygonMumbai)._web3Listeners()
+    await new Indexer(supportedChains.polygonMumbai).__web3Listeners()
   }
 
   public async shutdown() {

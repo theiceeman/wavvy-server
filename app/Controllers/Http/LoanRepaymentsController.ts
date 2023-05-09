@@ -12,7 +12,6 @@ export default class LoanRepaymentsController {
 
       let result = await LoanRepayment.create({
         contractLoanId: data.contractLoanId,
-        contractPoolId: data.contractPoolId,
         contractLoanRepaymentId: data.contractLoanRepaymentId,
         amount: data.amount,
         type: data.type,

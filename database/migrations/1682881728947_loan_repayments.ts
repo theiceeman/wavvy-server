@@ -14,7 +14,6 @@ export default class extends BaseSchema {
       table.string('unique_id').unique()
       table.string('contract_loan_repayment_id').notNullable()
       table.string('contract_loan_id').notNullable()
-      table.string('contract_pool_id').notNullable()
       table.integer('amount').notNullable()
       table.string('type').notNullable()
 

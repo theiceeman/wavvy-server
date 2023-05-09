@@ -26,11 +26,30 @@ export default class Purchase extends BaseModel {
   public orderId: string
 
   @column()
+  public userAddress: string
+
+  @column()
   public contractPurchaseId: string
 
   @column()
   public contractPoolId: string
 
+  @column()
+  public contractLoanId: string
+
+  @column()
+  public escrowAddress: string
+
+  @column()
+  public tokenAddress: string
+
+  @column()
+  public tokenId: string
+
+  @column()
+  public downPayment: string
+
+  // OPEN | COMPLETED | FAILED | CLAIMED | LIQUIDATED | USER_REFUNDED
   @column()
   public status: string
 

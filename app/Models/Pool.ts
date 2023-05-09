@@ -4,17 +4,6 @@ import { genRandomUuid } from 'App/Controllers/Helpers/utils'
 import { supportedChains } from 'App/Controllers/Blockchain/ethers'
 
 
-/*
-
-    table.string('unique_id').unique()
-    table.string('creator_id')
-    table.string('amount')
-    table.string('payment_cycle')
-    table.string('apr')
-    table.string('duration_in_secs')
-    table.string('duration_in_months')
-    table.string('status')
- */
 export default class Pool extends BaseModel {
   @column({ isPrimary: true })
   public id: number

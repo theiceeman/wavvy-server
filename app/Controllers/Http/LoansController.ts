@@ -16,7 +16,6 @@ export default class LoansController {
       let result = await Loan.create({
         network: data.network,
         contractLoanId: data.contractLoanId,
-        contractPoolId: data.contractPoolId,
         borrower: data.borrower,
         principal: data.principal,
       });

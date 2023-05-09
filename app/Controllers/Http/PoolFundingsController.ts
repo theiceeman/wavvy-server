@@ -13,11 +13,12 @@ export default class PoolFundingsController {
 
       let result = await PoolFunding.create({
         contractPoolId: data.contractPoolId,
+        network: data.network,
         amount: data.amount
       });
 
       if (result !== null) {
-        response.status(200).json({ data: "funding created!" });
+        response.status(200).json({ data: "pool funding created!" });
       } else {
         throw new Error("pool funding failed!");
       }

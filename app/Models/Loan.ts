@@ -17,19 +17,14 @@ export default class Loan extends BaseModel {
   public contractLoanId: string
 
   @column()
-  public contractPoolId: string
-
-  @column()
   public borrower: string
 
   @column()
   public principal: string
 
+  // 'open' | 'closed'
   @column()
-  public blockTimestamp: string
-
-  @column()
-  public status: 'open' | 'closed'
+  public status: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
