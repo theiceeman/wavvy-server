@@ -26,7 +26,7 @@ purchaseCompleted
 export default class Indexer {
   private network;
   private wavvy;
-  private _wavvy;
+  // private _wavvy;
   private poolRegistry;
   private _poolRegistry;
 
@@ -36,7 +36,7 @@ export default class Indexer {
     const socket = getWeb3Socket(network)
 
     this.poolRegistry = new ethers.Contract(contractAddress[network].POOL_REGISTRY, abiManager.PoolRegistryAbi, provider);
-    this._wavvy = new ethers.Contract(contractAddress[network].WAVVY, abiManager.WavvyAbi, provider);
+    // this._wavvy = new ethers.Contract(contractAddress[network].WAVVY, abiManager.WavvyAbi, provider);
 
 
     this.wavvy = new socket.eth.Contract(abiManager.WavvyAbi, contractAddress[network].WAVVY)
@@ -61,10 +61,18 @@ export default class Indexer {
         .poolFunded(String(args[0]), args[1].toString(10))
     });
 
+
+    // this._wavvy.on('PurchaseCreated', async (_from, _to, value) => {
+    //   let { args } = value
+    //   console.log({value})
+    //   // await new DataIngester(this.network)
+    //   //   .poolCreated(String(args[0]), args[1])
+    // });
+
   }
 
 
-  public async web3Listeners() {
+  public async PurchaseCreated() {
 
     this.wavvy.events.PurchaseCreated(async (_err, events) => {
       let { userAddress, purchaseId, downPayment } = events.returnValues;
@@ -72,22 +80,29 @@ export default class Indexer {
         .purchaseCreated(userAddress, purchaseId, downPayment)
     })
 
+
+
+  }
+  public async LoanCreatedListener() {
     this._poolRegistry.events.LoanCreated(async (_err, events) => {
-      let { loanId, borrower, principal } = events.returnValues;
+
+      console.log({ events })
+      let { loanId, poolId, borrower, principal } = events.returnValues;
       await new DataIngester(this.network)
-        .loanCreated(loanId, borrower, principal)
+        .loanCreated(loanId, poolId, borrower, principal)
     })
 
+  }
+
+  public async PurchaseCompletedListener() {
     this.wavvy.events.PurchaseCompleted(async (_err, events) => {
       let { purchaseId } = events.returnValues;
       await new DataIngester(this.network)
         .purchaseCompleted(purchaseId)
     })
-
   }
 
-
-  public async _web3Listeners() {
+  public async LoanRepaid() {
     this.wavvy.events.LoanRepaid(async (_err, events) => {
       let { loanRepaymentId, loanId, amount } = events.returnValues;
       await new DataIngester(this.network)
@@ -97,7 +112,7 @@ export default class Indexer {
   }
 
 
-  public async __web3Listeners() {
+  public async NFTClaimed() {
     this.wavvy.events.NFTClaimed(async (_err, events) => {
       let { purchaseId, claimer } = events.returnValues;
       await new DataIngester(this.network)

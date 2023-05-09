@@ -35,8 +35,9 @@ export default class Pool extends BaseModel {
   @column()
   public durationInMonths: number
 
+  // 'open' | 'closed'
   @column()
-  public status: 'open' | 'closed'
+  public status: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

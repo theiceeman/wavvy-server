@@ -17,6 +17,9 @@ export default class Loan extends BaseModel {
   public contractLoanId: string
 
   @column()
+  public contractPoolId: string
+
+  @column()
   public borrower: string
 
   @column()

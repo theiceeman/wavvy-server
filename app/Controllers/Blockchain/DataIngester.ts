@@ -26,8 +26,10 @@ export default class DataIngester {
         paymentCycle: Number(pool.paymentCycle).toString(),
         apr: Number(pool.APR),
         durationInSecs: Number(pool.durationInSecs),
-        durationInMonths: Number(pool.durationInMonths)
+        durationInMonths: Number(pool.durationInMonths),
+        status: pool.status == 0 ? 'OPEN' : 'CLOSED'
       }
+      // console.log({data})
 
       let result = await Pool.create(data)
       if (result !== null) console.log('PoolCreated event ingested.');
@@ -82,12 +84,13 @@ export default class DataIngester {
   }
 
 
-  public async loanCreated(loanId: string, borrower: string, principal: string) {
+  public async loanCreated(loanId: string, poolId: string, borrower: string, principal: string) {
     try {
 
       let data = {
         network: this.network,
         contractLoanId: loanId,
+        contractPoolId: poolId,
         borrower: borrower,
         principal: formatEther(principal),
         status: 'open'

@@ -15,7 +15,7 @@ export default class extends BaseSchema {
       table.integer('apr').notNullable()
       table.integer('duration_in_secs').notNullable()
       table.integer('duration_in_months').notNullable()
-      table.string('status')
+      table.string('status').notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

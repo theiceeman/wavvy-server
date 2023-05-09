@@ -5,6 +5,7 @@ import { formatErrorMessage } from '../Helpers/utils';
 import Database from '@ioc:Adonis/Lucid/Database';
 import PoolFundingsController from './PoolFundingsController';
 import LoansController from './LoansController';
+import { HttpContext } from '@adonisjs/core/build/standalone';
 
 export default class PoolsController {
 
@@ -54,7 +55,7 @@ export default class PoolsController {
         .where('unique_id', params.uniqueId)
 
       let totalAmount = await new PoolFundingsController()
-        .totalFundsInPool(data[0].pool_id)
+        .totalFundsInPool(data[0].contract_pool_id)
       data[0].volume = totalAmount
 
       response.status(200).json({ data });
@@ -64,12 +65,18 @@ export default class PoolsController {
   }
 
 
-  public async view({
-    response,
+  public async viewActive({
+    response, request
   }: HttpContextContract) {
     try {
+      let network = request.header('CLIENT-NETWORK')
+      if (network === undefined) {
+        throw new Error('Attach header `CLIENT-NETWORK`')
+      }
+
       let data = await Database.from("pools")
-        .where('status', 'open')
+        .where('status', 'OPEN')
+        .where('network', network)
 
       for (const each of data) {
         let totalAmount = await new PoolFundingsController()
@@ -87,10 +94,16 @@ export default class PoolsController {
   public async user({
     params,
     response,
+    request
   }: HttpContextContract) {
     try {
+      let network = request.header('CLIENT-NETWORK')
+      if (network === undefined) {
+        throw new Error('Attach header `CLIENT-NETWORK`')
+      }
       let data = await Database.from("pools")
         .where('creator_id', params.userAddress)
+        .where('network', network)
 
       for (const each of data) {
         let totalAmount = await new PoolFundingsController()
@@ -132,9 +145,13 @@ export default class PoolsController {
   }
 
 
-  public async totalVolumeInPools() {
+  public async totalVolumeInPools({ request }: HttpContextContract) {
     let totalVolume = 0;
-    let pool = await Database.from("pools")
+    let network = request.header('CLIENT-NETWORK')
+    if (network === undefined) {
+      return 0
+    }
+    let pool = await Database.from("pools").where('network', network)
 
     for (const each of pool) {
       let volumeInPool = await new PoolFundingsController()
@@ -145,10 +162,12 @@ export default class PoolsController {
     return totalVolume;
   }
 
-  public async totalVolumeAvailableInPools() {
+  public async totalVolumeAvailableInPools({ request, response, logger, profiler }: HttpContextContract) {
     // total_available = total_vol - total_borrowed
-    let totalVolume = await this.totalVolumeInPools();
-    let totalBorrowed = await new LoansController().totalLoansBorrowed()
+    const httpContext = new HttpContext(request, response, logger, profiler)
+
+    let totalVolume = await this.totalVolumeInPools(httpContext);
+    let totalBorrowed = await new LoansController().totalLoansBorrowed(httpContext)
     return totalVolume - totalBorrowed;
   }
 

@@ -18,12 +18,12 @@ export default class CollectionsController {
         .getCollectionDetails(data.address, data.network)
 
       let result = await Collection.create({
-        address:data.address,
+        address: data.address,
         network: data.network,
         name: collection.name,
         description: collection.description,
         avatar: collection.avatar,
-        owner:'zzz',
+        owner: 'zzz',
         noOfItems: collection.items,
         totalVolume: 'zzz',
         floorPrice: collection.floorPrice,
@@ -66,11 +66,17 @@ export default class CollectionsController {
   }
 
   public async view({
-    response,
+    response, request
   }: HttpContextContract) {
     try {
+      let network = request.header('CLIENT-NETWORK')
+      if (network === undefined) {
+        throw new Error('Attach header `CLIENT-NETWORK`')
+      }
+
       let data = await Database.from("collections")
         .where('status', 'active')
+        .where('network', network)
 
       response.status(200).json({ data });
     } catch (error) {
