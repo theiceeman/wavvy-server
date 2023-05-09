@@ -16,9 +16,6 @@ export default class LoanRepayment extends BaseModel {
   public contractLoanId: string
 
   @column()
-  public contractPoolId: string
-
-  @column()
   public amount: number
 
   @column()

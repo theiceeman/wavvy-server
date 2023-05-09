@@ -13,6 +13,6 @@ const contract = new web3.eth.Contract(abi, '0xDeee23398Bb90727a2122b4EcB61d55aD
 //     console.error(error);
 //   });
 console.log('listening...')
-contract.events.PurchaseCreated((err, events) => {
+contract.events.LoanRepaid((err, events) => {
   console.log(err, events)
 })

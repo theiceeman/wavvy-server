@@ -36,10 +36,12 @@ export default class IndexerProvider {
     // App is ready
     const Indexer = (await import('App/Controllers/Blockchain/Indexer')).default;
 
-    await new Indexer(supportedChains.polygonMumbai).listen()
+    await new Indexer(supportedChains.polygonMumbai).ethersListeners()
 
 
     await new Indexer(supportedChains.polygonMumbai).web3Listeners()
+    await new Indexer(supportedChains.polygonMumbai)._web3Listeners()
+    await new Indexer(supportedChains.polygonMumbai).__web3Listeners()
   }
 
   public async shutdown() {

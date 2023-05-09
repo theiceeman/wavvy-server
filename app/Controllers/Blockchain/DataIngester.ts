@@ -6,6 +6,7 @@ import Purchase from "App/Models/Purchase";
 import Loan from "App/Models/Loan";
 import Pool from "App/Models/Pool";
 import PoolFunding from "App/Models/PoolFunding";
+import LoanRepayment from "App/Models/LoanRepayment";
 
 export default class DataIngester {
   private network: supportedChains;
@@ -69,7 +70,7 @@ export default class DataIngester {
         tokenAddress: purchase.tokenAddress,
         tokenId: String(purchase.tokenId),
         downPayment,
-        status: 'pending'
+        status: 'OPEN'
       }
 
       let result = await Purchase.create(data)
@@ -96,6 +97,82 @@ export default class DataIngester {
 
     } catch (error) {
       console.log({ error, msg: 'LoanCreated event ingestion failed!' });
+    }
+  }
+
+  public async loanRepaid(loanRepaymentId: string, loanId: string, amount: string, type: string) {
+    try {
+
+      let data = {
+        contractLoanId: loanId,
+        contractLoanRepaymentId: loanRepaymentId,
+        amount: Number(formatEther(amount)),
+        type: type == '0' ? 'full' : 'part'
+      }
+      let result = await LoanRepayment.create(data)
+
+      // check loan status, if closed update loan status
+      // let loan = new PoolRegistryStore(this.network).getLoanByPoolID()
+
+      // if (type == '0') {
+
+      //   let data = {
+      //     status: 'closed'
+      //   }
+
+      //   let result = await Loan
+      //     .query()
+      //     .where("contract_loan_id", loanId)
+      //     .update({ data })
+      // }
+
+      if (result !== null) console.log('LoanRepaid event ingested.');
+
+    } catch (error) {
+      console.log({ error, msg: 'LoanRepaid event ingestion failed!' });
+    }
+  }
+
+  public async nftClaimed(purchaseId: string, claimer: string) {
+    try {
+      let data = {
+        status: 'CLAIMED'
+      }
+
+      let result = await Purchase
+        .query()
+        .where("contract_purchase_id", purchaseId)
+        .where("user_address", claimer)
+        .update(data)
+      if (result !== null) console.log('NftClaimed event ingested.');
+
+    } catch (error) {
+      console.log({ error, msg: 'NftClaimed event ingestion failed!' });
+    }
+  }
+
+  // emit PurchaseCompleted(purchaseId);
+  public async purchaseCompleted(purchaseId: string) {
+    try {
+      let result = await Purchase
+        .query()
+        .where("contract_purchase_id", purchaseId)
+
+      let purchase = await new WavvyStore(this.network).getPurchaseByID(result[0].userAddress, purchaseId)
+
+      let data = {
+        status: 'COMPLETED',
+        escrowAddress: purchase.escrowAddress
+      }
+
+      await Purchase
+        .query()
+        .where("contract_purchase_id", purchaseId)
+        .update(data)
+      if (result !== null) console.log('PurchaseCompleted event ingested.');
+
+    } catch (error) {
+      console.log({ error, msg: 'PurchaseCompleted event ingestion failed!' });
     }
   }
 

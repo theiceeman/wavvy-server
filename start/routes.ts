@@ -82,6 +82,6 @@ Route.group(() => {
 }).prefix('/repayment')
 
 
-Route.get('/test', async () => {
-  new Indexer(supportedChains.polygonMumbai).test()
-})
+// Route.get('/test', async () => {
+//   new Indexer(supportedChains.polygonMumbai).test()
+// })

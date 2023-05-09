@@ -49,6 +49,7 @@ export default class Purchase extends BaseModel {
   @column()
   public downPayment: string
 
+  // OPEN | COMPLETED | FAILED | CLAIMED | LIQUIDATED | USER_REFUNDED
   @column()
   public status: string
 
