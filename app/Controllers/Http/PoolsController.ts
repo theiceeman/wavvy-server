@@ -29,7 +29,7 @@ export default class PoolsController {
         apr: data.apr,
         durationInSecs: data.durationInSecs,
         durationInMonths: data.durationInMonths,
-        status: 'open'
+        status: 'OPEN'
       });
 
       if (result !== null) {

@@ -26,12 +26,29 @@ export default class AlchemyApi {
     if (!response.ok)
       throw new Error('alchemy api unavailable!')
     let data = response.data.data;
-    let { collectionName, description, externalUrl, imageUrl, twitterUsername } = data.contractMetadata.openSea
+    let collectionName, description, externalUrl, imageUrl, twitterUsername;
 
+    let opensea = data.contractMetadata.openSea
+    if (opensea.hasOwnProperty('collectionName')) {
+      collectionName = opensea.collectionName,
+        description = opensea.description,
+        externalUrl = opensea.externalUrl,
+        imageUrl = opensea.imageUrl,
+        twitterUsername = opensea.twitterUsername
+    } else {
+      collectionName = data.title,
+        description = data.description,
+        externalUrl = '',
+        imageUrl = data.media[0].gateway,
+        twitterUsername = ''
+
+    }
+    console.log({ collectionName, description, externalUrl, imageUrl, twitterUsername })
     let items = await this.getNftTotalSupply(address, network);
     // return items;
 
     let floorPriceUrl = this.getNftFloorPriceUrl(network, address)
+    console.log({ res: floorPriceUrl })
     let floorPriceResponse = await Request.get(floorPriceUrl)
     if (!floorPriceResponse.ok)
       throw new Error('alchemy api unavailable!')
