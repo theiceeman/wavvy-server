@@ -34,6 +34,8 @@ Route.group(() => {
   Route.post('/new', 'CollectionsController.create')
   Route.post('/status/:id', 'CollectionsController.status')
   Route.get('/active', 'CollectionsController.view')
+  Route.get('/:collectionId', 'CollectionsController.single')
+  //
 }).prefix('/collections')
 
 

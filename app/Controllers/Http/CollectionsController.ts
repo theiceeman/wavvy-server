@@ -5,6 +5,7 @@ import { formatErrorMessage } from '../Helpers/utils';
 import AlchemyApi from '../Marketplace/AlchemyApi';
 import Collection from 'App/Models/Collection';
 import Database from '@ioc:Adonis/Lucid/Database';
+import Rarible from '../Marketplace/Rarible';
 
 export default class CollectionsController {
 
@@ -42,6 +43,39 @@ export default class CollectionsController {
     }
   }
 
+  public async single({
+    params,
+    response,
+  }: HttpContextContract) {
+    try {
+      let data = await Database.from("collections")
+        .where('unique_id', params.collectionId)
+
+      data[0].collections = await this.collectionTokens(data[0].address, data[0].network)
+
+      response.status(200).json({ data });
+    } catch (error) {
+      response.status(400).json({ data: error.message });
+    }
+  }
+
+  async collectionTokens(address, network,) {
+
+    let collection: Array<Object> = []
+    for (let i = 0; i < 5; i++) {
+      const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
+      let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
+
+      let { floorPrice, floorPriceCurrency, saleStatus, orderId } = await new Rarible(network)
+        .getTokenMarketplaceData(address, tokenId)
+
+      collection.push({
+        tokenAvatar, floorPrice, floorPriceCurrency, saleStatus, orderId
+      })
+    }
+    return collection;
+  }
+
   public async status({ params, response }: HttpContextContract) {
     try {
       const { id } = params;
@@ -77,6 +111,11 @@ export default class CollectionsController {
       let data = await Database.from("collections")
         .where('status', 'active')
         .where('network', network)
+
+      for (let i = 0; i < data.length; i++) {
+        let collection = await this.collectionTokens(data[i].address, data[i].network)
+        data[i].collections = collection;
+      };
 
       response.status(200).json({ data });
     } catch (error) {
