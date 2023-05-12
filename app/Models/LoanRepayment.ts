@@ -10,6 +10,9 @@ export default class LoanRepayment extends BaseModel {
   public uniqueId: string = genRandomUuid()
 
   @column()
+  public network: string
+
+  @column()
   public contractLoanRepaymentId: string
 
   @column()

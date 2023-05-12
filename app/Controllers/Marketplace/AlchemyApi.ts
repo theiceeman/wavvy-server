@@ -2,7 +2,6 @@ import { Request } from "../Helpers/https";
 import Env from '@ioc:Adonis/Core/Env'
 import { ethers } from "ethers";
 import abiManager from "../../../resources/abi";
-import Web3 from 'web3';
 
 interface Collection {
   name: string,
@@ -115,10 +114,10 @@ export default class AlchemyApi {
     let client
     switch (network) {
       case 'ethereum':
-        client = new ethers.JsonRpcProvider(Env.get('MAINNET_PROVIDER'));
+        client = new ethers.providers.JsonRpcProvider(Env.get('MAINNET_PROVIDER'));
         break;
       case 'matic':
-        client = new ethers.JsonRpcProvider(Env.get('MATIC_PROVIDER'));
+        client = new ethers.providers.JsonRpcProvider(Env.get('MATIC_PROVIDER'));
         break;
       default:
         break;
