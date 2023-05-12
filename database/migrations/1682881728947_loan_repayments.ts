@@ -12,6 +12,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('unique_id').unique()
+      table.string('network').notNullable()
       table.string('contract_loan_repayment_id').notNullable()
       table.string('contract_loan_id').notNullable()
       table.integer('amount').notNullable()

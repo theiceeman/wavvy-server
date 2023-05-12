@@ -5,6 +5,7 @@ import abiManager from "../../../resources/abi/index"
 import { ethers } from "ethers";
 import DataIngester from "./DataIngester";
 import { getWeb3Socket } from "../Helpers/utils";
+import Env from '@ioc:Adonis/Core/Env'
 
 /*
 repay loan
@@ -26,7 +27,6 @@ purchaseCompleted
 export default class Indexer {
   private network;
   private wavvy;
-  // private _wavvy;
   private poolRegistry;
   private _poolRegistry;
 
@@ -35,15 +35,80 @@ export default class Indexer {
     const provider = getClient(network)
     const socket = getWeb3Socket(network)
 
-    this.poolRegistry = new ethers.Contract(contractAddress[network].POOL_REGISTRY, abiManager.PoolRegistryAbi, provider);
-    // this._wavvy = new ethers.Contract(contractAddress[network].WAVVY, abiManager.WavvyAbi, provider);
-
+    const wallet = new ethers.Wallet(Env.get('WAVVY_PRIVATE_KEY'), provider);
+    this.poolRegistry = new ethers.Contract(contractAddress[network].POOL_REGISTRY, abiManager.PoolRegistryAbi, wallet);
 
     this.wavvy = new socket.eth.Contract(abiManager.WavvyAbi, contractAddress[network].WAVVY)
     this._poolRegistry = new socket.eth.Contract(abiManager.PoolRegistryAbi, contractAddress[network].POOL_REGISTRY)
   }
 
 
+  public async streamPastEvents() {
+    await this._poolRegistry.getPastEvents('PoolCreated', { fromBlock: 0 }, (error, events) => {
+      events.forEach(async e => {
+        let { poolId, creator } = e.returnValues;
+        await new DataIngester(this.network)
+          .poolCreated(poolId, creator)
+      });
+    });
+
+
+    await this._poolRegistry.getPastEvents('PoolFunded', { fromBlock: 0 }, (error, events) => {
+      events.forEach(async e => {
+        let { poolId, amount } = e.returnValues;
+        await new DataIngester(this.network)
+          .poolFunded(poolId, amount)
+      });
+    });
+
+
+    await this.wavvy.getPastEvents('PurchaseCreated', { fromBlock: 0 }, (error, events) => {
+      events.forEach(async e => {
+        let { userAddress, purchaseId, downPayment } = e.returnValues;
+        await new DataIngester(this.network)
+          .purchaseCreated(userAddress, purchaseId, downPayment)
+      });
+    });
+
+
+
+    await this._poolRegistry.getPastEvents('LoanCreated', { fromBlock: 0 }, (error, events) => {
+      events.forEach(async e => {
+        let { loanId, poolId, borrower, principal } = e.returnValues;
+        await new DataIngester(this.network)
+          .loanCreated(loanId, poolId, borrower, principal)
+      });
+
+    });
+
+
+    await this.wavvy.getPastEvents('PurchaseCompleted', { fromBlock: 0 }, (error, events) => {
+      events.forEach(async e => {
+        let { purchaseId } = e.returnValues;
+        await new DataIngester(this.network)
+          .purchaseCompleted(purchaseId);
+      });
+    });
+
+
+    await this.wavvy.getPastEvents('LoanRepaid', { fromBlock: 0 }, (error, events) => {
+      events.forEach(async e => {
+        let { loanRepaymentId, loanId, amount } = e.returnValues;
+        await new DataIngester(this.network)
+          .loanRepaid(loanRepaymentId, loanId, amount, e.returnValues['3'])
+      });
+    });
+
+
+    await this.wavvy.getPastEvents('NFTClaimed', { fromBlock: 0 }, (error, events) => {
+      events.forEach(async e => {
+        let { purchaseId, claimer } = e.returnValues;
+        await new DataIngester(this.network)
+          .nftClaimed(purchaseId, claimer)
+      });
+    });
+
+  }
 
 
   public async ethersListeners() {
@@ -61,38 +126,28 @@ export default class Indexer {
         .poolFunded(String(args[0]), args[1].toString(10))
     });
 
-
-    // this._wavvy.on('PurchaseCreated', async (_from, _to, value) => {
-    //   let { args } = value
-    //   console.log({value})
-    //   // await new DataIngester(this.network)
-    //   //   .poolCreated(String(args[0]), args[1])
-    // });
-
   }
 
 
   public async PurchaseCreated() {
-
     this.wavvy.events.PurchaseCreated(async (_err, events) => {
       let { userAddress, purchaseId, downPayment } = events.returnValues;
       await new DataIngester(this.network)
         .purchaseCreated(userAddress, purchaseId, downPayment)
     })
 
-
-
   }
+
+
   public async LoanCreatedListener() {
     this._poolRegistry.events.LoanCreated(async (_err, events) => {
-
-      console.log({ events })
       let { loanId, poolId, borrower, principal } = events.returnValues;
       await new DataIngester(this.network)
         .loanCreated(loanId, poolId, borrower, principal)
     })
 
   }
+
 
   public async PurchaseCompletedListener() {
     this.wavvy.events.PurchaseCompleted(async (_err, events) => {
@@ -101,6 +156,7 @@ export default class Indexer {
         .purchaseCompleted(purchaseId)
     })
   }
+
 
   public async LoanRepaid() {
     this.wavvy.events.LoanRepaid(async (_err, events) => {
@@ -120,20 +176,5 @@ export default class Indexer {
     })
 
   }
-
-
-
-
-
-  // public async test() {
-
-  //   // Get all events emitted by the contract
-  //   const filter = {
-  //     address: contractAddress[this.network].WAVVY
-  //   };
-  //   const events = await this._wavvy.queryFilter(filter);
-  //   console.log(events);
-  // }
-
 
 }

@@ -15,6 +15,14 @@ export default class CollectionsController {
       const data = request.body();
       await this.validate(request)
 
+
+      let res = await Database.from("collections")
+        .where('address', data.address)
+        .where('network', data.network)
+      if (res.length > 0) {
+        throw new Error('Collection added previously!')
+      }
+
       let collection = await new AlchemyApi()
         .getCollectionDetails(data.address, data.network)
 
@@ -59,7 +67,7 @@ export default class CollectionsController {
     }
   }
 
-  async collectionTokens(address, network,) {
+  public async collectionTokens(address, network,) {
 
     let collection: Array<Object> = []
     for (let i = 0; i < 5; i++) {

@@ -35,8 +35,8 @@ export default class PoolRegistryStore {
   }
 
 
-  public async getLoanByPoolID(loanId, poolId): Promise<LoanDetails> {
-    const data = await this.contract.getLoanByPoolID(loanId, poolId);
+  public async getLoanByPoolID(poolId, loanId): Promise<LoanDetails> {
+    const data = await this.contract.getLoanByPoolID(poolId, loanId);
     return data
   }
 
