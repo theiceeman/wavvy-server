@@ -34,7 +34,7 @@ contract.getPastEvents('allEvents', {
  */
 
 const { ethers } = require("ethers");
-const { abi } = require('./resources/abi/PoolRegistry.json')
+const { abi } = require('../resources/abi/PoolRegistry.json')
 
 
   async function x(){

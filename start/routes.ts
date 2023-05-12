@@ -19,8 +19,6 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-import Indexer from 'App/Controllers/Blockchain/Indexer'
-import { supportedChains } from 'App/Controllers/Blockchain/ethers'
 
 Route.get('/', async () => {
   return { hello: 'world' }

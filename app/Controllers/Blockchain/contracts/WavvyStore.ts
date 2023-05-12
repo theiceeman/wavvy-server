@@ -2,17 +2,6 @@ import { ethers } from "ethers";
 import { getClient, contractAddress, supportedChains } from "../ethers";
 import abiManager from "../../../../resources/abi/index";
 
-type PoolDetails = {
-  amount: number,
-  paymentCycle: number,
-  APR: number,
-  durationInSecs: number,
-  durationInMonths: number,
-  creator: number,
-  status: number, //  OPEN | CLOSED
-  isExists: boolean
-}
-
 
 
 type PurchaseDetails = {

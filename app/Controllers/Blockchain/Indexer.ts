@@ -44,7 +44,7 @@ export default class Indexer {
 
 
   public async streamPastEvents() {
-    await this._poolRegistry.getPastEvents('PoolCreated', { fromBlock: 0 }, (error, events) => {
+    await this._poolRegistry.getPastEvents('PoolCreated', { fromBlock: 0 }, (_error, events) => {
       events.forEach(async e => {
         let { poolId, creator } = e.returnValues;
         await new DataIngester(this.network)
@@ -53,7 +53,7 @@ export default class Indexer {
     });
 
 
-    await this._poolRegistry.getPastEvents('PoolFunded', { fromBlock: 0 }, (error, events) => {
+    await this._poolRegistry.getPastEvents('PoolFunded', { fromBlock: 0 }, (_error, events) => {
       events.forEach(async e => {
         let { poolId, amount } = e.returnValues;
         await new DataIngester(this.network)
@@ -62,7 +62,7 @@ export default class Indexer {
     });
 
 
-    await this.wavvy.getPastEvents('PurchaseCreated', { fromBlock: 0 }, (error, events) => {
+    await this.wavvy.getPastEvents('PurchaseCreated', { fromBlock: 0 }, (_error, events) => {
       events.forEach(async e => {
         let { userAddress, purchaseId, downPayment } = e.returnValues;
         await new DataIngester(this.network)
@@ -72,7 +72,7 @@ export default class Indexer {
 
 
 
-    await this._poolRegistry.getPastEvents('LoanCreated', { fromBlock: 0 }, (error, events) => {
+    await this._poolRegistry.getPastEvents('LoanCreated', { fromBlock: 0 }, (_error, events) => {
       events.forEach(async e => {
         let { loanId, poolId, borrower, principal } = e.returnValues;
         await new DataIngester(this.network)
@@ -82,7 +82,7 @@ export default class Indexer {
     });
 
 
-    await this.wavvy.getPastEvents('PurchaseCompleted', { fromBlock: 0 }, (error, events) => {
+    await this.wavvy.getPastEvents('PurchaseCompleted', { fromBlock: 0 }, (_error, events) => {
       events.forEach(async e => {
         let { purchaseId } = e.returnValues;
         await new DataIngester(this.network)
@@ -91,7 +91,7 @@ export default class Indexer {
     });
 
 
-    await this.wavvy.getPastEvents('LoanRepaid', { fromBlock: 0 }, (error, events) => {
+    await this.wavvy.getPastEvents('LoanRepaid', { fromBlock: 0 }, (_error, events) => {
       events.forEach(async e => {
         let { loanRepaymentId, loanId, amount } = e.returnValues;
         await new DataIngester(this.network)
@@ -100,7 +100,7 @@ export default class Indexer {
     });
 
 
-    await this.wavvy.getPastEvents('NFTClaimed', { fromBlock: 0 }, (error, events) => {
+    await this.wavvy.getPastEvents('NFTClaimed', { fromBlock: 0 }, (_error, events) => {
       events.forEach(async e => {
         let { purchaseId, claimer } = e.returnValues;
         await new DataIngester(this.network)
