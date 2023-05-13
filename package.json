@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node ace serve --watch",
     "build": "node ace build --production --ignore-ts-errors",
-    "build:prod": "npm i; npm run build; node scripts/mv-env.js; node build/ace migration:refresh --force;npm run start:pm2",
+    "build:prod": "yarn install; yarn run build; node scripts/mv-env.js; node build/ace migration:refresh --force;yarn run start:pm2",
     "start:pm2": "pm2 start build/ecosystem.config.js",
     "start": "node server.js --ignore-ts-errors",
     "test": "node ace test"
@@ -36,6 +36,7 @@
     "luxon": "^3.3.0",
     "opensea-js": "^5.0.0",
     "pg": "^8.10.0",
+    "pm2": "^5.3.0",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.21",
