@@ -1,5 +1,5 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
-import { supportedChains } from 'App/Controllers/Blockchain/ethers';
+import { supportedChains } from 'App/Controllers/types';
 
 /*
 |--------------------------------------------------------------------------
@@ -34,18 +34,18 @@ export default class IndexerProvider {
 
   public async ready() {
     // App is ready
-    const Indexer = (await import('App/Controllers/Blockchain/Indexer')).default;
+    // const Indexer = (await import('App/Controllers/Blockchain/Indexer')).default;
 
-    await new Indexer(supportedChains.polygonMumbai).streamPastEvents()
+    // await new Indexer(supportedChains.polygonMumbai).streamPastEvents()
 
-    await new Indexer(supportedChains.polygonMumbai).ethersListeners()
-    await new Indexer(supportedChains.polygonMumbai).PurchaseCreated()
+    // await new Indexer(supportedChains.polygonMumbai).ethersListeners()
+    // await new Indexer(supportedChains.polygonMumbai).PurchaseCreated()
 
-    await new Indexer(supportedChains.polygonMumbai).LoanCreatedListener()
-    await new Indexer(supportedChains.polygonMumbai).PurchaseCompletedListener()
+    // await new Indexer(supportedChains.polygonMumbai).LoanCreatedListener()
+    // await new Indexer(supportedChains.polygonMumbai).PurchaseCompletedListener()
 
-    await new Indexer(supportedChains.polygonMumbai).LoanRepaid()
-    await new Indexer(supportedChains.polygonMumbai).NFTClaimed()
+    // await new Indexer(supportedChains.polygonMumbai).LoanRepaid()
+    // await new Indexer(supportedChains.polygonMumbai).NFTClaimed()
   }
 
   public async shutdown() {

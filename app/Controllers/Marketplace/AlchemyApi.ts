@@ -2,17 +2,9 @@ import { Request } from "../Helpers/https";
 import Env from '@ioc:Adonis/Core/Env'
 import { ethers } from "ethers";
 import abiManager from "../../../resources/abi";
+import { Collection } from "../types";
 
-interface Collection {
-  name: string,
-  description: string,
-  avatar: string;
-  owner: string,
-  items: string,
-  // total_volume: string,
-  floorPrice: string,
-  website: string
-}
+
 
 export default class AlchemyApi {
 
@@ -42,12 +34,12 @@ export default class AlchemyApi {
         twitterUsername = ''
 
     }
-    console.log({ collectionName, description, externalUrl, imageUrl, twitterUsername })
+    // console.log({ collectionName, description, externalUrl, imageUrl, twitterUsername })
     let items = await this.getNftTotalSupply(address, network);
     // return items;
 
     let floorPriceUrl = this.getNftFloorPriceUrl(network, address)
-    console.log({ res: floorPriceUrl })
+    // console.log({ res: floorPriceUrl })
     let floorPriceResponse = await Request.get(floorPriceUrl)
     if (!floorPriceResponse.ok)
       throw new Error('alchemy api unavailable!')

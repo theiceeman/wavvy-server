@@ -18,6 +18,7 @@ global.window = window;
 global.document = window.document;
 
 interface TokenMarketplaceData {
+  tokenId: string;
   floorPrice: string | null;
   floorPriceCurrency: string | null;
   saleStatus: 'AVAILABLE' | 'UNAVAILABLE';
@@ -66,11 +67,12 @@ export default class Rarible {
       if (saleStatus !== 'AVAILABLE')
         throw new Error("No active sell orders for token!");
 
-      return { floorPrice, floorPriceCurrency, saleStatus, orderId }
+      return { tokenId, floorPrice, floorPriceCurrency, saleStatus, orderId }
 
     } catch (error) {
       console.log(error.message)
       return {
+        tokenId,
         floorPrice: null,
         floorPriceCurrency: null,
         saleStatus: 'UNAVAILABLE',

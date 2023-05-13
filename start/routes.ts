@@ -19,6 +19,8 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import OpenSea from 'App/Controllers/Marketplace/OpenSea'
+import { supportedChains } from 'App/Controllers/types'
 
 Route.get('/', async () => {
   return { hello: 'world' }
@@ -82,6 +84,7 @@ Route.group(() => {
 }).prefix('/repayment')
 
 
-// Route.get('/test', async () => {
-//   new Indexer(supportedChains.polygonMumbai).test()
-// })
+Route.get('/test', async () => {
+  return await new OpenSea(supportedChains.ethereum).getTokensForSale('0x8d9710f0e193d3f95c0723eaaf1a81030dc9116d')
+  // return await new OpenSea(supportedChains.ethereum).getCollectionDetails('0x8d9710f0e193d3f95c0723eaaf1a81030dc9116d','1')
+})

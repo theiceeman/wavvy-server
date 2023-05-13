@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node ace serve --watch",
     "build": "node ace build --production --ignore-ts-errors",
-    "build:prod": "node ace build --production --ignore-ts-errors && cd build && yarn install --production  && pm2 node server.js",
+    "build:prod": "npm i; npm run build; node scripts/mv-env.js; node build/ace migration:refresh --force;npm run start:pm2",
+    "start:pm2": "pm2 start build/ecosystem.config.js",
     "start": "node server.js --ignore-ts-errors",
     "test": "node ace test"
   },
@@ -33,12 +34,14 @@
     "ethers": "^5.4.7",
     "jsdom": "^21.1.1",
     "luxon": "^3.3.0",
+    "opensea-js": "^5.0.0",
     "pg": "^8.10.0",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.21",
     "tslib": "^2.3.1",
     "uuid": "^9.0.0",
-    "web3": "^1.9.0"
+    "web3": "^1.9.0",
+    "wyvern-js": "^3.0.0-rc3"
   }
 }
