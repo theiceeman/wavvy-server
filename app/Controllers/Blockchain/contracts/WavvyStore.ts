@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
-import { getClient, contractAddress, supportedChains } from "../ethers";
+import { getClient } from "../ethers";
 import abiManager from "../../../../resources/abi/index";
+import { contractAddress, supportedChains } from "App/Controllers/types";
 
 
 

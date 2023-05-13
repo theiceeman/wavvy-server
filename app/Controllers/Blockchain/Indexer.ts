@@ -1,11 +1,12 @@
 
 
-import { contractAddress, getClient, supportedChains } from "./ethers";
+import {  getClient } from "./ethers";
 import abiManager from "../../../resources/abi/index"
 import { ethers } from "ethers";
 import DataIngester from "./DataIngester";
 import { getWeb3Socket } from "../Helpers/utils";
 import Env from '@ioc:Adonis/Core/Env'
+import { contractAddress, supportedChains } from "../types";
 
 /*
 repay loan

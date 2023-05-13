@@ -6,6 +6,7 @@ import AlchemyApi from '../Marketplace/AlchemyApi';
 import Collection from 'App/Models/Collection';
 import Database from '@ioc:Adonis/Lucid/Database';
 import Rarible from '../Marketplace/Rarible';
+import OpenSea from '../Marketplace/OpenSea';
 
 export default class CollectionsController {
 
@@ -23,8 +24,9 @@ export default class CollectionsController {
         throw new Error('Collection added previously!')
       }
 
-      let collection = await new AlchemyApi()
-        .getCollectionDetails(data.address, data.network)
+
+      let collection = await new OpenSea(data.network)
+        .getCollectionDetails(data.address, '1')
 
       let result = await Collection.create({
         address: data.address,
@@ -32,9 +34,9 @@ export default class CollectionsController {
         name: collection.name,
         description: collection.description,
         avatar: collection.avatar,
-        owner: 'zzz',
+        owner: collection.owner,
         noOfItems: collection.items,
-        totalVolume: 'zzz',
+        totalVolume: collection.totalVolume,
         floorPrice: collection.floorPrice,
         website: collection.website,
         status: 'active'
@@ -67,8 +69,7 @@ export default class CollectionsController {
     }
   }
 
-  public async collectionTokens(address, network,) {
-
+  public async collectionTokens(address, network) {
     let collection: Array<Object> = []
     for (let i = 0; i < 5; i++) {
       const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
@@ -78,7 +79,7 @@ export default class CollectionsController {
         .getTokenMarketplaceData(address, tokenId)
 
       collection.push({
-        tokenAvatar, floorPrice, floorPriceCurrency, saleStatus, orderId
+        tokenId, tokenAvatar, floorPrice, floorPriceCurrency, saleStatus, orderId
       })
     }
     return collection;
