@@ -54,6 +54,8 @@ export default class PoolsController {
       let data = await Database.from("pools")
         .where('unique_id', params.uniqueId)
 
+      if (data.length < 1) throw new Error('Invalid pool id')
+
       let totalAmount = await new PoolFundingsController()
         .totalFundsInPool(data[0].contract_pool_id)
       data[0].volume = totalAmount
