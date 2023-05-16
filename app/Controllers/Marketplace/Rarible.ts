@@ -111,11 +111,11 @@ export default class Rarible {
     let url;
     switch (this.network) {
       case 'ethereum':
-        url = `https://api.rarible.org/v0.1/orders/sell/byItem?itemId=ETHEREUM:${collectionAddress}:${tokenId.trim()}`
+        url = `https://api.rarible.org/v0.1/orders/sell/byItem?itemId=ETHEREUM:${collectionAddress}:${tokenId}`
         break;
 
       case 'matic':
-        url = `https://api.rarible.org/v0.1/orders/sell/byItem?itemId=POLYGON:${collectionAddress}:${tokenId.trim()}`
+        url = `https://api.rarible.org/v0.1/orders/sell/byItem?itemId=POLYGON:${collectionAddress}:${tokenId}`
         break;
 
       default:
