@@ -104,7 +104,7 @@ export default class PoolsController {
         throw new Error('Attach header `CLIENT-NETWORK`')
       }
       let data = await Database.from("pools")
-        .where('creator_id', params.userAddress)
+        .where('creator_id', (params.userAddress).toLowerCase())
         .where('network', network)
 
       for (const each of data) {

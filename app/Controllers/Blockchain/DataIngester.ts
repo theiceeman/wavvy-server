@@ -29,7 +29,7 @@ export default class DataIngester {
       const pool = await new PoolRegistryStore(this.network).getPoolByID(poolId);
       let data = {
         contractPoolId: poolId,
-        creatorId: creatorId,
+        creatorId: (creatorId).toLowerCase(),
         network: this.network,
         paymentCycle: Number(pool.paymentCycle).toString(),
         apr: Number(pool.APR),
