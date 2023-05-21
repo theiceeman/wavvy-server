@@ -2,7 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import Purchase from 'App/Models/Purchase';
 import { formatErrorMessage } from '../Helpers/utils';
-import Rarible from '../Marketplace/Rarible';
+// import Rarible from '../Marketplace/Rarible';
 import Database from '@ioc:Adonis/Lucid/Database';
 
 export default class PurchasesController {
@@ -14,7 +14,7 @@ export default class PurchasesController {
       let network = (((data.orderId).split(':'))[0]).toLowerCase()
 
 
-      let res = await new Rarible(network).createPurchase(data.orderId)
+      // let res = await new Rarible(network).createPurchase(data.orderId)
 
       let result = await Purchase.create({
         // orderId: data.orderId,

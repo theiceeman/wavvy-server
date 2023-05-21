@@ -1,9 +1,10 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import Database from "@ioc:Adonis/Lucid/Database";
-import Rarible from '../Marketplace/Rarible';
+// import Rarible from '../Marketplace/Rarible';
 import Loan from 'App/Models/Loan';
 import { formatErrorMessage } from '../Helpers/utils';
+import OpenSea from '../Marketplace/OpenSea';
 
 export default class LoansController {
 
@@ -42,7 +43,7 @@ export default class LoansController {
       let pool = await Database.from("pools")
         .where('unique_id', params.poolUniqueId)
 
-      let { floorPrice } = await new Rarible(collection[0].network)
+      let { floorPrice } = await new OpenSea(collection[0].network)
         .getTokenMarketplaceData(collection[0].address, params.tokenId)
 
       // nb: in our project, downpayment(initial amount paid) is equal to the prinicipal(amount borrowed).
