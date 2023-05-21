@@ -42,6 +42,16 @@ export default class OpenSea {
     }
   }
 
+  public async getTokenMarketplaceData(collectionAddress, tokenId) {
+    return {
+      tokenId,
+      floorPrice: null,
+      floorPriceCurrency: null,
+      saleStatus: 'UNAVAILABLE',
+      orderId: null,
+    }
+  }
+
   public async getTokensForSale(tokenAddress) {
     const { orders } = await this.openSeaSdk.getOrders({
       asset_contract_address: tokenAddress,

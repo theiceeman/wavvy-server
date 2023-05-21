@@ -1,11 +1,10 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { formatErrorMessage } from '../Helpers/utils';
-// import Rarible from '../Marketplace/Rarible';
 import AlchemyApi from '../Marketplace/AlchemyApi';
 import Collection from 'App/Models/Collection';
 import Database from '@ioc:Adonis/Lucid/Database';
-import Rarible from '../Marketplace/Rarible';
+// import Rarible from '../Marketplace/Rarible';
 import OpenSea from '../Marketplace/OpenSea';
 
 export default class CollectionsController {
@@ -75,7 +74,7 @@ export default class CollectionsController {
       const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
       let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
-      let { floorPrice, floorPriceCurrency, saleStatus, orderId } = await new Rarible(network)
+      let { floorPrice, floorPriceCurrency, saleStatus, orderId } = await new OpenSea(network)
         .getTokenMarketplaceData(address, tokenId)
 
       collection.push({

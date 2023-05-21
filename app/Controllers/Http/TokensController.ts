@@ -1,8 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AlchemyApi from '../Marketplace/AlchemyApi';
 import Database from '@ioc:Adonis/Lucid/Database';
-import Rarible from '../Marketplace/Rarible';
+// import Rarible from '../Marketplace/Rarible';
 import { formatErrorMessage } from '../Helpers/utils';
+import OpenSea from '../Marketplace/OpenSea';
 
 export default class TokensController {
 
@@ -20,7 +21,7 @@ export default class TokensController {
 
       let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(res[0].address, tokenId, res[0].network)
 
-      let { floorPrice, floorPriceCurrency, saleStatus, orderId } = await new Rarible(res[0].network)
+      let { floorPrice, floorPriceCurrency, saleStatus, orderId } = await new OpenSea(res[0].network)
         .getTokenMarketplaceData(res[0].address, tokenId)
 
       let data = {
