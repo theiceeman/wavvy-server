@@ -9,12 +9,10 @@ import OpenSea from '../Marketplace/OpenSea';
 
 export default class CollectionsController {
 
-  // address, network[ethereum, polygon], marketplace[rarible, opensea, blur],
   public async create({ request, response }: HttpContextContract) {
     try {
       const data = request.body();
       await this.validate(request)
-
 
       let res = await Database.from("collections")
         .where('address', data.address)
@@ -23,9 +21,9 @@ export default class CollectionsController {
         throw new Error('Collection added previously!')
       }
 
-
       let collection = await new OpenSea(data.network)
         .getCollectionDetails(data.address, '1')
+
 
       let result = await Collection.create({
         address: data.address,
@@ -33,6 +31,7 @@ export default class CollectionsController {
         name: collection.name,
         description: collection.description,
         avatar: collection.avatar,
+        bannerImageUrl: collection.bannerImageUrl,
         owner: collection.owner,
         noOfItems: collection.items,
         totalVolume: collection.totalVolume,
@@ -68,17 +67,17 @@ export default class CollectionsController {
     }
   }
 
-  public async collectionTokens(address, network) {
+  public async collectionTokens(address, network): Promise<Array<Object>> {
     let collection: Array<Object> = []
     for (let i = 0; i < 5; i++) {
       const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
       let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
-      let { floorPrice, floorPriceCurrency, saleStatus, orderId } = await new OpenSea(network)
+      let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
         .getTokenMarketplaceData(address, tokenId)
 
       collection.push({
-        tokenId, tokenAvatar, floorPrice, floorPriceCurrency, saleStatus, orderId
+        tokenId, tokenAvatar, floorPrice, floorPriceCurrency, saleStatus
       })
     }
     return collection;

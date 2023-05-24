@@ -85,6 +85,6 @@ Route.group(() => {
 
 
 Route.get('/test', async () => {
-  return await new OpenSea(supportedChains.ethereum).getTokensForSale('0x8d9710f0e193d3f95c0723eaaf1a81030dc9116d')
-  // return await new OpenSea(supportedChains.ethereum).getCollectionDetails('0x8d9710f0e193d3f95c0723eaaf1a81030dc9116d','1')
+  // return await new OpenSea(supportedChains.ethereum).getTokensForSale('0x8d9710f0e193d3f95c0723eaaf1a81030dc9116d')
+  return await new OpenSea(supportedChains.ethereum).getTokenMarketplaceData('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d','8819')
 })

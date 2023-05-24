@@ -2,11 +2,12 @@ export interface Collection {
   name: string,
   description: string,
   avatar: string;
+  bannerImageUrl: string,
   owner: string,
   items: string,
   totalVolume: string,
   floorPrice: string,
-  website: string
+  website: string | undefined
 }
 
 export enum supportedChains {

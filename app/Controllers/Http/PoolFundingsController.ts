@@ -42,6 +42,7 @@ export default class PoolFundingsController {
 
   }
 
+
   private async validate(request) {
     const Schema = schema.create({
       contractPoolId: schema.string(),

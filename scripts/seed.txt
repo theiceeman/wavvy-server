@@ -19,3 +19,4 @@
   "address":"0x792e256416680e2dd774a165cbb23462f3ff0d12",
   "network":"ethereum"
 }
+0xc126ffe27c6e008ba23df678004ffdf2e711520b

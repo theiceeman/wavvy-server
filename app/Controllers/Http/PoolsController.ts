@@ -84,6 +84,9 @@ export default class PoolsController {
         let totalAmount = await new PoolFundingsController()
           .totalFundsInPool(each.contract_pool_id)
         each.volume = totalAmount
+
+        let totalLoans = await new LoansController().totalLoansFundedByPool(each.contract_pool_id);
+        each.noOfLoans = totalLoans
       }
 
       response.status(200).json({ data });

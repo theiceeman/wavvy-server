@@ -4,6 +4,7 @@ import Env from '@ioc:Adonis/Core/Env'
 import { OpenSeaAsset } from 'opensea-js/lib/types';
 import { getRpcUrl } from '../Helpers/utils';
 import { Collection, supportedChains } from '../types';
+import { Request } from '../Helpers/https';
 
 
 
@@ -26,10 +27,13 @@ export default class OpenSea {
     })
     let collection = asset.collection
 
+    let apiAsset = await this.getCollectionAsset(tokenAddress);
+
     return {
       name: collection.name,
       description: collection.description,
       avatar: collection.featuredImageUrl,
+      bannerImageUrl: apiAsset.assets[0].collection.banner_image_url,
       // @ts-ignore
       owner: collection.owner,
       // @ts-ignore
@@ -37,18 +41,34 @@ export default class OpenSea {
       // @ts-ignore
       totalVolume: collection.stats.total_volume,
       // @ts-ignore
-      floorPrice: collection.stats.floor_price,
+      floorPrice: collection.stats.seven_day_average_price,
       website: collection.externalLink,
     }
   }
 
   public async getTokenMarketplaceData(collectionAddress, tokenId) {
-    return {
-      tokenId,
-      floorPrice: null,
-      floorPriceCurrency: null,
-      saleStatus: 'UNAVAILABLE',
-      orderId: null,
+    try {
+      let token = await this.getCollectionToken(collectionAddress, tokenId);
+      let floorPriceCurrency = 'WETH', floorPrice, saleStatus;
+
+      if (token.orders === null && token.seaport_sell_orders === null) {
+        saleStatus = 'UNAVAILABLE'
+        floorPrice = token.collection.stats.seven_day_average_price
+      } else {
+        saleStatus = 'AVAILABLE'
+        floorPrice = token.seaport_sell_orders[0].current_price / 10 ** 18;
+      }
+
+      return { tokenId, floorPrice, floorPriceCurrency, saleStatus }
+
+    } catch (error) {
+      console.log(error.message)
+      return {
+        tokenId,
+        floorPrice: null,
+        floorPriceCurrency: null,
+        saleStatus: 'UNAVAILABLE',
+      }
     }
   }
 
@@ -80,6 +100,36 @@ export default class OpenSea {
     // const accountAddress = Env.get('WAVVY_WALLET') // The buyer's wallet address, also the taker
     // const transactionHash = await this.openSeaSdk.fulfillOrder({ order, accountAddress })
 
+  }
+
+  private async getCollectionAsset(collectionAddress) {
+    let url = `https://api.opensea.io/api/v1/assets?order_direction=desc&asset_contract_address=${collectionAddress}&limit=20&include_orders=true`
+
+    let config = {
+      headers: {
+        "X-API-KEY": Env.get('OPENSEA_API_KEY'),
+      }
+    }
+
+    let response = await Request.get(url, config)
+    if (!response.ok)
+      throw new Error('opensea api unavailable!')
+    return response.data.data;
+  }
+
+  private async getCollectionToken(collectionAddress, tokenId) {
+    let url = `https://api.opensea.io/api/v1/asset/${collectionAddress}/${tokenId}/?include_orders=true`
+
+    let config = {
+      headers: {
+        "X-API-KEY": Env.get('OPENSEA_API_KEY'),
+      }
+    }
+
+    let response = await Request.get(url, config)
+    if (!response.ok)
+      throw new Error('opensea api unavailable!')
+    return response.data.data;
   }
 
 

@@ -32,10 +32,7 @@ export default class LoansController {
     }
   }
 
-  public async loanTerms({
-    params,
-    response,
-  }: HttpContextContract) {
+  public async loanTerms({ params, response }: HttpContextContract) {
     try {
       let collection = await Database.from("collections")
         .where('unique_id', params.collectionUniqueId)
@@ -43,10 +40,14 @@ export default class LoansController {
       let pool = await Database.from("pools")
         .where('unique_id', params.poolUniqueId)
 
+      if (collection[0].network !== pool[0].network) {
+        throw new Error('collection and pool are not on same chain!')
+      }
+
       let { floorPrice } = await new OpenSea(collection[0].network)
         .getTokenMarketplaceData(collection[0].address, params.tokenId)
 
-      // nb: in our project, downpayment(initial amount paid) is equal to the prinicipal(amount borrowed).
+      // nb: in our project, downpayment(initial amount paid) is equal to the principal(amount borrowed).
       let downPaymentAmount = Number(floorPrice) / 2;
       let monthlyPayments = await this.partPaymentWithoutDefault(downPaymentAmount, params.poolUniqueId);
       let totalPurchaseAmount = downPaymentAmount + (monthlyPayments * Number(pool[0].payment_cycle))
@@ -80,6 +81,13 @@ export default class LoansController {
     }
 
     return volumeBorrowed
+  }
+
+  public async totalLoansFundedByPool(contractPoolId) {
+    let data = await Database.from("loans")
+      .where('contract_pool_id', contractPoolId)
+    return data.length;
+
   }
 
 

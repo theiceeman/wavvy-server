@@ -12,6 +12,7 @@ export default class extends BaseSchema {
       table.string('name')
       table.text('description')
       table.string('avatar')
+      table.string('banner_image_url')
       table.string('owner')
       table.string('no_of_items')
       table.string('total_volume')
