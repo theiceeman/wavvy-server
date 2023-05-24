@@ -41,10 +41,10 @@ const databaseConfig: DatabaseConfig = {
         user: Env.get('PG_USER'),
         password: Env.get('PG_PASSWORD', ''),
         database: Env.get('PG_DB_NAME'),
-        ssl: {
-          // Set SSL options here
-          rejectUnauthorized: true // Enable strict SSL verification
-        },
+        // ssl: {
+        //   // Set SSL options here
+        //   rejectUnauthorized: true // Enable strict SSL verification
+        // },
       },
       migrations: {
         naturalSort: true,
