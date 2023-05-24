@@ -41,7 +41,7 @@ export default class OpenSea {
       // @ts-ignore
       totalVolume: collection.stats.total_volume,
       // @ts-ignore
-      floorPrice: collection.stats.seven_day_average_price,
+      floorPrice: (collection.stats.seven_day_average_price).toFixed(2),
       website: collection.externalLink,
     }
   }
