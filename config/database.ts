@@ -43,7 +43,7 @@ const databaseConfig: DatabaseConfig = {
         database: Env.get('PG_DB_NAME'),
         ssl: {
           // Set SSL options here
-          rejectUnauthorized: true // Enable strict SSL verification
+          rejectUnauthorized: Env.get('PG_SSL') // Enable strict SSL verification
         },
       },
       migrations: {
