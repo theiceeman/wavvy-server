@@ -6,8 +6,8 @@ import Loan from "App/Models/Loan";
 import Pool from "App/Models/Pool";
 import PoolFunding from "App/Models/PoolFunding";
 import LoanRepayment from "App/Models/LoanRepayment";
-import { supportedChains } from "./ethers";
 import { utils } from "ethers";
+import { supportedChains } from "../types"
 
 export default class DataIngester {
   private network: supportedChains;

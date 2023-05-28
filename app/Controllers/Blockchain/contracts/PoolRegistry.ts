@@ -1,7 +1,8 @@
 import { ethers, utils } from "ethers";
-import { getClient, contractAddress } from "../ethers";
+import { getClient } from "../ethers";
 import abiManager from "../../../../resources/abi/index"
 import WavvyStore from "./WavvyStore";
+import { contractAddress } from "../../types"
 
 export default class PoolRegistry {
   private provider;

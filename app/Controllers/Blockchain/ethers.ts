@@ -10,15 +10,15 @@ export function getClient(network: supportedChains) {
     case 'ethereum':
       client = new ethers.providers.JsonRpcProvider(Env.get('MAINNET_PROVIDER'));
       break;
-    case 'matic':
-      client = new ethers.providers.JsonRpcProvider(Env.get('MATIC_PROVIDER'));
-      break;
+    // case 'matic':
+    //   client = new ethers.providers.JsonRpcProvider(Env.get('MATIC_PROVIDER'));
+    //   break;
     case 'polygonMumbai':
       client = new ethers.providers.JsonRpcProvider(Env.get('MUMBAI_PROVIDER'));
       break;
-    case 'bscTestnet':
-      client = new ethers.providers.JsonRpcProvider(Env.get('BSC_TESTNET_PROVIDER'));
-      break;
+    // case 'bscTestnet':
+    //   client = new ethers.providers.JsonRpcProvider(Env.get('BSC_TESTNET_PROVIDER'));
+    //   break;
     default:
       break;
   }

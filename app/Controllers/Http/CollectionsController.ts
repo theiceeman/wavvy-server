@@ -107,7 +107,7 @@ export default class CollectionsController {
   }
 
   public async view({
-    response, request
+    response
   }: HttpContextContract) {
     try {
       let data = await Database.from("collections")
