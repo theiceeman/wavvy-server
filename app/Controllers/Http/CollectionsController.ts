@@ -110,14 +110,8 @@ export default class CollectionsController {
     response, request
   }: HttpContextContract) {
     try {
-      let network = request.header('CLIENT-NETWORK')
-      if (network === undefined) {
-        throw new Error('Attach header `CLIENT-NETWORK`')
-      }
-
       let data = await Database.from("collections")
         .where('status', 'active')
-        .where('network', network)
 
       for (let i = 0; i < data.length; i++) {
         let collection = await this.collectionTokens(data[i].address, data[i].network)

@@ -72,15 +72,30 @@ export default class LoanRepaymentsController {
       let currentDate = dayPurchasedInSecs;
       for (let i = 0; i < pool[0].payment_cycle; i++) {
         let nextDueDate = currentDate + paymentInterval
-        timeline.push(`Due ${convertTimestampInSecsToDate(nextDueDate)}`)
+        timeline.push(convertTimestampInSecsToDate(nextDueDate))
         currentDate = nextDueDate
       }
 
-
       response.status(200).json({ data: timeline });
+
     } catch (error) {
       response.status(400).json({ data: error.message });
     }
+  }
+
+
+
+  async amountRepaidByUser(contractLoanId, network) {
+    let repayments = await Database.from("loan_repayments")
+      .where('contract_loan_id', contractLoanId)
+      .where('network', network)
+
+    let amountRepaid = 0;
+    repayments.forEach(e => {
+      amountRepaid += e.amount;
+    });
+
+    return amountRepaid;
   }
 
 }

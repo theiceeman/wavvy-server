@@ -2,8 +2,12 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import Purchase from 'App/Models/Purchase';
 import { formatErrorMessage } from '../Helpers/utils';
-// import Rarible from '../Marketplace/Rarible';
 import Database from '@ioc:Adonis/Lucid/Database';
+import Loan from 'App/Models/Loan';
+import User from 'App/Models/User';
+import AlchemyApi from '../Marketplace/AlchemyApi';
+import LoanRepaymentsController from './LoanRepaymentsController';
+import LoansController from './LoansController';
 
 export default class PurchasesController {
 
@@ -11,7 +15,6 @@ export default class PurchasesController {
     try {
       const data = request.body();
       await this.validate(request)
-      let network = (((data.orderId).split(':'))[0]).toLowerCase()
 
 
       // let res = await new Rarible(network).createPurchase(data.orderId)
@@ -29,6 +32,106 @@ export default class PurchasesController {
       } else {
         throw new Error("Purchase creation failed!");
       }
+
+    } catch (error) {
+      response.status(400).json({ data: await formatErrorMessage(error) })
+    }
+  }
+
+  /*
+    {
+      collection_name:
+      token_avatar:
+      user_address:
+      downpayment:
+      principal:
+    }
+  */
+  public async recent({
+    response, request
+  }: HttpContextContract) {
+    try {
+      let network = request.header('CLIENT-NETWORK')
+      if (network === undefined) {
+        throw new Error('Attach header `CLIENT-NETWORK`')
+      }
+
+      let purchases = await Database.from("purchases")
+        .where('network', network)
+
+      for (const each of purchases) {
+        let { tokenAddress, tokenId, network: tokenNetwork, name } =
+          (await Database.from("collections")
+            .where('address', each.tokenAddress)
+            .where('network', network))[0]
+
+        let loan = await Database.from("loans")
+          .where('contract_loan_id', purchases[0].contractLoanId)
+
+        each.collectionName = name;
+        each.tokenAvatar = await new AlchemyApi()
+          .getNftTokenAvatar(tokenAddress, tokenId, tokenNetwork)
+        each.prinicpal = loan[0].principal;
+
+      }
+
+      response.status(200).json({ data: purchases });
+    } catch (error) {
+      response.status(400).json({ data: error.message });
+    }
+  }
+
+  public async userPurchases({ params, response, request }: HttpContextContract) {
+    /*
+      {
+        loan_id:
+        token_avatar:
+        token_id:
+        collection_name:
+        principal_remaining:
+        next_due_date:
+      }
+    */
+    try {
+      const { userId } = params;
+
+      let network = request.header('CLIENT-NETWORK')
+      if (network === undefined) {
+        throw new Error('Attach header `CLIENT-NETWORK`');
+      }
+
+      let user = await User.query()
+        .where("unique_id", userId)
+
+      let loans = await Database.from("loans")
+        .where("borrower", user[0].walletAddress)
+        .where("network", network)
+
+      for (let i = 0; i < loans.length; i++) {
+
+        let { tokenAddress, tokenId, network: tokenNetwork } = (await Purchase.query()
+          .where("contract_loan_id", loans[0].contract_loan_id)
+          .where("network", network))[0]
+
+        let collection = await Database.from("collections")
+          .where("address", tokenAddress)
+          .where("network", network)
+
+        let amountRepaid = await new LoanRepaymentsController()
+          .amountRepaidByUser(userId, network)
+
+        loans[i].tokenId = tokenId
+        loans[i].tokenAvatar = await new AlchemyApi()
+          .getNftTokenAvatar(tokenAddress, tokenId, tokenNetwork)
+        loans[i].collectionName = collection[0].name
+        loans[i].debt = loans[i].principal - amountRepaid;
+        loans[i].nextDueDate = await new LoansController()
+          .userNextDueDateForPayment(loans[0].contract_loan_id, network)
+
+      };
+
+      // return loans
+      response.status(200).json({ data: loans });
 
     } catch (error) {
       response.status(400).json({ data: await formatErrorMessage(error) })

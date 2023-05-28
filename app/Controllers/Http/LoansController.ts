@@ -3,7 +3,7 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import Database from "@ioc:Adonis/Lucid/Database";
 // import Rarible from '../Marketplace/Rarible';
 import Loan from 'App/Models/Loan';
-import { formatErrorMessage } from '../Helpers/utils';
+import { convertIsoTimestampToDate, convertTimestampInSecsToDate, convertTimestampToSeconds, formatErrorMessage } from '../Helpers/utils';
 import OpenSea from '../Marketplace/OpenSea';
 
 export default class LoansController {
@@ -100,6 +100,44 @@ export default class LoansController {
 
     let interest = (principal * pool[0].apr) / 100;
     return (principal + interest) / pool[0].payment_cycle;
+  }
+
+
+  public async userNextDueDateForPayment(
+    contractLoanId,
+    network
+  ) {
+    let repayments = await Database.from("loan_repayments")
+      .where('contract_loan_id', contractLoanId)
+      .where('network', network)
+    let countRepayments = repayments.length;
+
+
+    let timeline: Array<string> = [];
+
+    let loan = await Database.from("loans")
+      .where('contract_loan_id', contractLoanId)
+      .where('network', network)
+
+    timeline.push(convertIsoTimestampToDate(loan[0].created_at))
+
+    let dayPurchasedInSecs = convertTimestampToSeconds(loan[0].created_at)
+
+    let pool = await Database.from("pools")
+      .where('contract_pool_id', loan[0].contract_pool_id)
+
+    let paymentInterval = pool[0].duration_in_secs / pool[0].payment_cycle;
+
+    let currentDate = dayPurchasedInSecs;
+    for (let i = 0; i < pool[0].payment_cycle; i++) {
+      let nextDueDate = currentDate + paymentInterval
+      timeline.push(convertTimestampInSecsToDate(nextDueDate))
+      currentDate = nextDueDate
+    }
+
+    return timeline[countRepayments + 1]
+
+
   }
 
 
