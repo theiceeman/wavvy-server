@@ -46,9 +46,8 @@ Route.group(() => {
 
 Route.group(() => {
   Route.post('/create', 'PurchasesController.create')
-  // update purchase status
-  // user purchases
-  // all purchases - for recent purchase section.
+  Route.get('/user/projects/:userId', 'PurchasesController.userPurchases')  // my projects
+  Route.get('/recent', 'PurchasesController.recent')
 }).prefix('/purchase')
 
 
@@ -85,6 +84,5 @@ Route.group(() => {
 
 
 Route.get('/test', async () => {
-  // return await new OpenSea(supportedChains.ethereum).getTokensForSale('0x8d9710f0e193d3f95c0723eaaf1a81030dc9116d')
-  return await new OpenSea(supportedChains.ethereum).getTokenMarketplaceData('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d','8819')
+  return await new OpenSea(supportedChains.goerli).createPurchase('0xc06ce325fccceaaeb809f00d1a9f7e844bd8ff09', '89')
 })

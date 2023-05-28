@@ -1,8 +1,9 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import Env from '@ioc:Adonis/Core/Env'
-import { supportedChains } from '../Blockchain/ethers';
+// import { supportedChains } from '../Blockchain/ethers';
 import Web3 from 'web3';
+import { supportedChains } from '../types';
 
 
 export function getRpcUrl(network) {
@@ -29,15 +30,15 @@ export function getWeb3Socket(network: supportedChains) {
     case 'ethereum':
       client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MAINNET_SOCKET')));
       break;
-    case 'matic':
-      client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MATIC_SOCKET')));
-      break;
+    // case 'matic':
+    //   client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MATIC_SOCKET')));
+    //   break;
     case 'polygonMumbai':
       client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MUMBAI_SOCKET')));
       break;
-    case 'bscTestnet':
-      client = new Web3(new Web3.providers.WebsocketProvider(Env.get('BSC_TESTNET_PROVIDER')));
-      break;
+    // case 'bscTestnet':
+    //   client = new Web3(new Web3.providers.WebsocketProvider(Env.get('BSC_TESTNET_PROVIDER')));
+    // break;
     default:
       break;
   }

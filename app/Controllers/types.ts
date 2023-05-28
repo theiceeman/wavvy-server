@@ -12,9 +12,10 @@ export interface Collection {
 
 export enum supportedChains {
   ethereum = 'ethereum',
-  matic = 'matic',
+  goerli = 'goerli',
+  // matic = 'matic',
   polygonMumbai = 'polygonMumbai',
-  bscTestnet = 'bscTestnet'
+  // bscTestnet = 'bscTestnet'
 }
 
 
