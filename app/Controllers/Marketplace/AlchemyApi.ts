@@ -54,6 +54,8 @@ export default class AlchemyApi {
       //
       floorPrice,
       website: externalUrl,
+      bannerImageUrl: 'null',
+      totalVolume: 'null'
     }
 
   }

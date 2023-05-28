@@ -3,7 +3,6 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import Purchase from 'App/Models/Purchase';
 import { formatErrorMessage } from '../Helpers/utils';
 import Database from '@ioc:Adonis/Lucid/Database';
-import Loan from 'App/Models/Loan';
 import User from 'App/Models/User';
 import AlchemyApi from '../Marketplace/AlchemyApi';
 import LoanRepaymentsController from './LoanRepaymentsController';
