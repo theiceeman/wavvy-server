@@ -37,15 +37,9 @@ export default class PurchasesController {
     }
   }
 
-  /*
-    {
-      collection_name:
-      token_avatar:
-      user_address:
-      downpayment:
-      principal:
-    }
-  */
+
+
+  //  returns: collection_name, token_avatar, user_address, downpayment, principal
   public async recent({
     response, request
   }: HttpContextContract) {

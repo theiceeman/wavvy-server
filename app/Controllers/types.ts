@@ -23,14 +23,14 @@ export const contractAddress = {
   ethereum: {
     WAVVY: '',
     POOL_REGISTRY: '',
-    ERC20_TOKEN: '',
+    ERC20_TOKEN: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',  // weth
     POOL_REGISTRY_STORE: '',
     WAVVY_STORE: '',
   },
   polygon: {
     WAVVY: '',
     POOL_REGISTRY: '',
-    ERC20_TOKEN: '',
+    ERC20_TOKEN: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
     POOL_REGISTRY_STORE: '',
     WAVVY_STORE: '',
   },

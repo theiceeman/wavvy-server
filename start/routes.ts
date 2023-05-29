@@ -84,5 +84,5 @@ Route.group(() => {
 
 
 Route.get('/test', async () => {
-  return await new OpenSea(supportedChains.goerli).createPurchase('0xc06ce325fccceaaeb809f00d1a9f7e844bd8ff09', '89')
+  return await new OpenSea(supportedChains.ethereum).createPurchase('0xA642375Cc15249A81da9c435fB4eDD8A9343ce7F', '10')
 })
