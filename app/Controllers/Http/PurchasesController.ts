@@ -80,17 +80,9 @@ export default class PurchasesController {
     }
   }
 
+
+  // returns: loan_id, token_avatar, token_id, collection_name, principal_remaining, next_due_date
   public async userPurchases({ params, response, request }: HttpContextContract) {
-    /*
-      {
-        loan_id:
-        token_avatar:
-        token_id:
-        collection_name:
-        principal_remaining:
-        next_due_date:
-      }
-    */
     try {
       const { userId } = params;
 
@@ -105,6 +97,9 @@ export default class PurchasesController {
       let loans = await Database.from("loans")
         .where("borrower", user[0].walletAddress)
         .where("network", network)
+
+      if (loans.length < 1)
+        throw new Error('user has no projects')
 
       for (let i = 0; i < loans.length; i++) {
 
