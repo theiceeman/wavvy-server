@@ -28,6 +28,20 @@ export default class PoolFundingsController {
     }
   }
 
+
+  public async viewAll({
+    response
+  }: HttpContextContract) {
+    try {
+      let data = await Database.from("pool_fundings")
+
+
+      response.status(200).json({ data });
+    } catch (error) {
+      response.status(400).json({ data: error.message });
+    }
+  }
+
   public async totalFundsInPool(poolId) {
     let amount = 0;
     let data = await Database.from("pool_fundings")

@@ -123,6 +123,19 @@ export default class CollectionsController {
     }
   }
 
+  public async viewAll({
+    response
+  }: HttpContextContract) {
+    try {
+      let data = await Database.from("collections")
+
+
+      response.status(200).json({ data });
+    } catch (error) {
+      response.status(400).json({ data: error.message });
+    }
+  }
+
 
   private async validate(request) {
     const Schema = schema.create({

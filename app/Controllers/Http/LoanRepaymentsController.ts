@@ -29,13 +29,27 @@ export default class LoanRepaymentsController {
     }
   }
 
+
+  public async viewAll({
+    response
+  }: HttpContextContract) {
+    try {
+      let data = await Database.from("collections")
+
+
+      response.status(200).json({ data });
+    } catch (error) {
+      response.status(400).json({ data: error.message });
+    }
+  }
+
   // partPay, fullPay
   public async amountToPay({
     params,
     response,
   }: HttpContextContract) {
     try {
-      let loan = await Database.from("loans")
+      let loan = await Database.from("loan_repayments")
         .where('unique_id', params.loanUniqueId)
 
       let partPayment = await new PoolRegistry(loan[0].network)
