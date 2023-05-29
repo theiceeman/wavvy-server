@@ -3,9 +3,11 @@ import { OpenSeaAPI, Network, OpenSeaSDK } from 'opensea-js'
 import Env from '@ioc:Adonis/Core/Env'
 import { OpenSeaAsset } from 'opensea-js/lib/types';
 import { formatErrorMessage, getRpcUrl } from '../Helpers/utils';
-import { Collection, supportedChains } from '../types';
+import { Collection, contractAddress, supportedChains } from '../types';
 import { Request } from '../Helpers/https';
 import { OrderV2 } from 'opensea-js/lib/orders/types';
+import { parseEther } from 'ethers/lib/utils';
+import { ItemType } from '@opensea/seaport-js/lib/constants';
 
 
 
@@ -13,9 +15,11 @@ export default class OpenSea {
   private openSeaApi;
   private openSeaSdk;
   private provider;
+  private network;
 
   constructor(network: supportedChains) {
     this.provider = new Web3.providers.HttpProvider(getRpcUrl(supportedChains.ethereum))
+    this.network = network;
 
     this.openSeaApi = new OpenSeaAPI({
       networkName: network == 'ethereum' ? Network.Main : Network.Goerli,
@@ -95,6 +99,7 @@ export default class OpenSea {
       }
 
       const order: OrderV2 = _order.orders[0]
+      // return order;
       const accountAddress: string = Env.get('WAVVY_WALLET')
 
       const transactionHash = await this.openSeaSdk.fulfillOrder({ order, accountAddress })
@@ -102,6 +107,29 @@ export default class OpenSea {
     } catch (error) {
       return { ok: false, data: await formatErrorMessage(error) };
     }
+
+  }
+
+  public async _createPurchase(collectionAddress: any, tokenId: any) {
+
+    let order = {
+      offer: [
+        {
+          itemType: ItemType.ERC721,
+          token: collectionAddress,
+          identifier: tokenId,
+        },
+      ],
+      consideration: [
+        {
+          amount: parseEther("10").toString(),
+          recipient: offerer.address,
+          token: contractAddress[this.network].ERC20_TOKEN
+        },
+      ],
+      // 2.5% fee
+      fees: [{ recipient: zone.address, basisPoints: 250 }],
+    };
 
   }
 
