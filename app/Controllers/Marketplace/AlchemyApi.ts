@@ -61,12 +61,16 @@ export default class AlchemyApi {
   }
 
   public async getNftTokenAvatar(collectionAddress, tokenId, network) {
-    let url = this.getNftMetadataUrl(network, collectionAddress, tokenId)
-    let response = await Request.get(url)
-    if (!response.ok)
-      throw new Error('alchemy api unavailable!')
-    let data = response.data.data;
-    return data.media[0].gateway
+    try {
+      let url = this.getNftMetadataUrl(network, collectionAddress, tokenId)
+      let response = await Request.get(url)
+      if (!response.ok)
+        throw new Error('alchemy api unavailable!')
+      let data = response.data.data;
+      return data.media[0].gateway
+    } catch (error) {
+      console.log({ error })
+    }
   }
 
   private getNftMetadataUrl(network, address, tokenId) {
