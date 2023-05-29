@@ -66,20 +66,24 @@ export default class CollectionsController {
     }
   }
 
-  public async collectionTokens(address, network): Promise<Array<Object>> {
-    let collection: Array<Object> = []
-    for (let i = 0; i < 5; i++) {
-      const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
-      let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
+  public async collectionTokens(address, network): Promise<any> {
+    try {
+      let collection: Array<Object> = []
+      for (let i = 0; i < 5; i++) {
+        const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
+        let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
-      let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
-        .getTokenMarketplaceData(address, tokenId)
+        let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
+          .getTokenMarketplaceData(address, tokenId)
 
-      collection.push({
-        tokenId, tokenAvatar, floorPrice, floorPriceCurrency, saleStatus
-      })
+        collection.push({
+          tokenId, tokenAvatar, floorPrice, floorPriceCurrency, saleStatus
+        })
+      }
+      return collection;
+    } catch (error) {
+      console.log({ error })
     }
-    return collection;
   }
 
   public async status({ params, response }: HttpContextContract) {
