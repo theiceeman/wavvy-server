@@ -34,6 +34,8 @@ Route.get('/viewAll', 'UsersController.viewAll')
 
 
 Route.group(() => {
+  Route.get('/', 'CollectionsController.view')
+
   Route.post('/new', 'CollectionsController.create')
   Route.post('/status/:id', 'CollectionsController.status')
 
