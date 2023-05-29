@@ -24,7 +24,6 @@ export default class CollectionsController {
       let collection = await new OpenSea(data.network)
         .getCollectionDetails(data.address, '1')
 
-
       let result = await Collection.create({
         address: data.address,
         network: data.network,
