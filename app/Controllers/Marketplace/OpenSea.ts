@@ -62,8 +62,6 @@ export default class OpenSea {
   public async getTokenMarketplaceData(collectionAddress, tokenId) {
     try {
       let token = await this.getCollectionToken(collectionAddress, tokenId);
-      console.log('getTokenMarketplaceData', { token })
-
       let floorPriceCurrency = 'WETH', floorPrice, saleStatus;
 
       if (token.orders === null && token.seaport_sell_orders === null) {
@@ -73,7 +71,7 @@ export default class OpenSea {
         saleStatus = 'AVAILABLE'
         floorPrice = token.seaport_sell_orders[0].current_price / 10 ** 18;
       }
-
+      console.log('getTokenMarketplaceData', { data: { tokenId, floorPrice, floorPriceCurrency, saleStatus } })
       return { tokenId, floorPrice, floorPriceCurrency, saleStatus }
 
     } catch (error) {
