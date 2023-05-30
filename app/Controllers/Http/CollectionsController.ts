@@ -87,7 +87,7 @@ export default class CollectionsController {
       }
       return collection;
     } catch (error) {
-      console.log({ error })
+      console.log({ collectionTokens: error })
     }
   }
 
@@ -98,13 +98,10 @@ export default class CollectionsController {
       let data = await Database.from("collections")
         .where('status', 'active')
 
-      let collection = await this.collectionTokens(data[0].address, data[0].network)
-      data[0].collections = collection;
-
-      // for (let i = 0; i < data.length; i++) {
-      //   let collection = await this.collectionTokens(data[i].address, data[i].network)
-      //   data[i].collections = collection;
-      // };
+      for (let i = 0; i < data.length; i++) {
+        let collection = await this.collectionTokens(data[i].address, data[i].network)
+        data[i].collections = collection;
+      };
 
       response.status(200).json({ data });
     } catch (error) {

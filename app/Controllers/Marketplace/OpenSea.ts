@@ -75,7 +75,7 @@ export default class OpenSea {
       return { tokenId, floorPrice, floorPriceCurrency, saleStatus }
 
     } catch (error) {
-      console.log({ error })
+      console.log({ getTokenMarketplaceData: error })
       return {
         tokenId,
         floorPrice: null,
@@ -159,7 +159,7 @@ export default class OpenSea {
       }
 
       let response = await Request.get(url, config)
-      console.log({url, response })
+      console.log({ url, response })
       if (!response.ok)
         throw new Error('opensea api unavailable!')
       return response.data.data;

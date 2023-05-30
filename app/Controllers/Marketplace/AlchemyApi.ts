@@ -69,7 +69,7 @@ export default class AlchemyApi {
       let data = response.data.data;
       return data.media[0].gateway
     } catch (error) {
-      console.log({ error })
+      console.log({ getNftTokenAvatar: error })
     }
   }
 
