@@ -70,7 +70,8 @@ export default class CollectionsController {
     try {
       let collection: Array<Object> = []
       for (let i = 0; i < 5; i++) {
-        const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
+        // const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
+        const tokenId = 1;
         let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
         let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
