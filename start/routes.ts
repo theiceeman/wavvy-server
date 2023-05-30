@@ -22,9 +22,14 @@ import Route from '@ioc:Adonis/Core/Route'
 import OpenSea from 'App/Controllers/Marketplace/OpenSea'
 import { supportedChains } from 'App/Controllers/types'
 
+
+
 Route.get('/', async () => {
   return { hello: 'world' }
 })
+
+
+Route.get('/collections/active', 'CollectionsController.view')
 
 
 Route.group(() => {
@@ -41,9 +46,7 @@ Route.group(() => {
 
   Route.get('/viewAll', 'CollectionsController.viewAll')
 
-  Route.get('/active', 'CollectionsController.view')
   Route.get('/:collectionId', 'CollectionsController.single')
-  //
 }).prefix('/collections')
 
 
