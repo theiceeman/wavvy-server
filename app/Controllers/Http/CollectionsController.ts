@@ -74,15 +74,15 @@ export default class CollectionsController {
         const tokenId = 1;
         let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
-        let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
-          .getTokenMarketplaceData(address, tokenId)
+        // let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
+        //   .getTokenMarketplaceData(address, tokenId)
 
         collection.push({
           tokenId,
           tokenAvatar,
-          floorPrice,
-          floorPriceCurrency,
-          saleStatus
+          // floorPrice,
+          // floorPriceCurrency,
+          // saleStatus
         })
       }
       return collection;
