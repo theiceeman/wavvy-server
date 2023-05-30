@@ -58,7 +58,7 @@ export default class CollectionsController {
       let data = await Database.from("collections")
         .where('unique_id', params.collectionId)
 
-      data[0].collections = await this.collectionTokens(data[0].address, data[0].network)
+      // data[0].collections = await this.collectionTokens(data[0].address, data[0].network)
 
       response.status(200).json({ data });
     } catch (error) {
