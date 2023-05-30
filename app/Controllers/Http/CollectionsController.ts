@@ -71,14 +71,14 @@ export default class CollectionsController {
       let collection: Array<Object> = []
       for (let i = 0; i < 5; i++) {
         const tokenId = Math.floor(Math.random() * (20 - 0 + 1)) + 0;
-        // let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
+        let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
         let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
           .getTokenMarketplaceData(address, tokenId)
 
         collection.push({
           tokenId,
-          // tokenAvatar,
+          tokenAvatar,
           floorPrice,
           floorPriceCurrency,
           saleStatus
@@ -87,6 +87,24 @@ export default class CollectionsController {
       return collection;
     } catch (error) {
       console.log({ error })
+    }
+  }
+
+  public async view({
+    response
+  }: HttpContextContract) {
+    try {
+      let data = await Database.from("collections")
+        .where('status', 'active')
+
+      for (let i = 0; i < data.length; i++) {
+        let collection = await this.collectionTokens(data[i].address, data[i].network)
+        data[i].collections = collection;
+      };
+
+      response.status(200).json({ data });
+    } catch (error) {
+      response.status(400).json({ data: error.message });
     }
   }
 
@@ -110,24 +128,6 @@ export default class CollectionsController {
 
     } catch (error) {
       response.status(400).json({ data: await formatErrorMessage(error) })
-    }
-  }
-
-  public async view({
-    response
-  }: HttpContextContract) {
-    try {
-      let data = await Database.from("collections")
-        .where('status', 'active')
-
-      for (let i = 0; i < data.length; i++) {
-        let collection = await this.collectionTokens(data[i].address, data[i].network)
-        data[i].collections = collection;
-      };
-
-      response.status(200).json({ data });
-    } catch (error) {
-      response.status(400).json({ data: error.message });
     }
   }
 

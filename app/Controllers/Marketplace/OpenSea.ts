@@ -18,7 +18,7 @@ export default class OpenSea {
   private network;
 
   constructor(network: supportedChains) {
-    this.provider = new Web3.providers.HttpProvider(getRpcUrl(supportedChains.ethereum))
+    this.provider = new Web3.providers.HttpProvider(getRpcUrl(network))
     this.network = network;
 
     this.openSeaApi = new OpenSeaAPI({
@@ -75,7 +75,7 @@ export default class OpenSea {
       return { tokenId, floorPrice, floorPriceCurrency, saleStatus }
 
     } catch (error) {
-      console.log(error.message)
+      console.log({ error })
       return {
         tokenId,
         floorPrice: null,
@@ -149,18 +149,23 @@ export default class OpenSea {
   }
 
   private async getCollectionToken(collectionAddress, tokenId) {
-    let url = `https://api.opensea.io/api/v1/asset/${collectionAddress}/${tokenId}/?include_orders=true`
+    try {
+      let url = `https://api.opensea.io/api/v1/asset/${collectionAddress}/${tokenId}/?include_orders=true`
 
-    let config = {
-      headers: {
-        "X-API-KEY": Env.get('OPENSEA_API_KEY'),
+      let config = {
+        headers: {
+          "X-API-KEY": Env.get('OPENSEA_API_KEY'),
+        }
       }
-    }
 
-    let response = await Request.get(url, config)
-    if (!response.ok)
-      throw new Error('opensea api unavailable!')
-    return response.data.data;
+      let response = await Request.get(url, config)
+      console.log({url, response })
+      if (!response.ok)
+        throw new Error('opensea api unavailable!')
+      return response.data.data;
+    } catch (error) {
+      console.log({ error })
+    }
   }
 
   private async getTokenListing(collectionAddress, tokenId) {
