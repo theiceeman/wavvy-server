@@ -86,6 +86,7 @@ export default class CollectionsController {
           saleStatus
         })
       }
+      console.log('collection', { collection })
       return collection;
     } catch (error) {
       console.log('collectionTokens', { error })
