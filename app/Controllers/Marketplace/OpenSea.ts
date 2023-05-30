@@ -62,6 +62,8 @@ export default class OpenSea {
   public async getTokenMarketplaceData(collectionAddress, tokenId) {
     try {
       let token = await this.getCollectionToken(collectionAddress, tokenId);
+      console.log('getTokenMarketplaceData', { token })
+
       let floorPriceCurrency = 'WETH', floorPrice, saleStatus;
 
       if (token.orders === null && token.seaport_sell_orders === null) {
@@ -75,7 +77,7 @@ export default class OpenSea {
       return { tokenId, floorPrice, floorPriceCurrency, saleStatus }
 
     } catch (error) {
-      console.log({ getTokenMarketplaceData: error })
+      console.log('getTokenMarketplaceData', { error })
       return {
         tokenId,
         floorPrice: null,
@@ -159,9 +161,10 @@ export default class OpenSea {
       }
 
       let response = await Request.get(url, config)
-      console.log({ url, response })
-      if (!response.ok)
+      // console.log({ url, response })
+      if (!response.ok) {
         throw new Error('opensea api unavailable!')
+      }
       return response.data.data;
     } catch (error) {
       console.log({ error })
