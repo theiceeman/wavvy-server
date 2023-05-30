@@ -69,7 +69,7 @@ export default class CollectionsController {
   public async collectionTokens(address, network): Promise<any> {
     try {
       let collection: Array<Object> = []
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 5; i++) {
         // Math.floor(Math.random() * (max - min) ) + min;
         const tokenId = Math.floor(Math.random() * (20 - 0)) + 0;
         // const tokenId = 1;
