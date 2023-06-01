@@ -72,7 +72,6 @@ export default class CollectionsController {
       for (let i = 0; i < 2; i++) {
         // Math.floor(Math.random() * (max - min) ) + min;
         const tokenId = Math.floor(Math.random() * (20 - 0)) + 0;
-        // const tokenId = 1;
         let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
         let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
@@ -86,7 +85,6 @@ export default class CollectionsController {
           saleStatus
         })
       }
-      console.log('collection', { collection })
       return collection;
     } catch (error) {
       console.log('collectionTokens', { error })
@@ -100,10 +98,10 @@ export default class CollectionsController {
       let data = await Database.from("collections")
         .where('status', 'active')
 
-      for (let i = 0; i < data.length; i++) {
-        let collection = await this.collectionTokens(data[i].address, data[i].network)
-        data[i].collections = collection;
-      };
+      // for (let i = 0; i < data.length; i++) {
+      //   let collection = await this.collectionTokens(data[i].address, data[i].network)
+      //   data[i].collections = collection;
+      // };
 
       response.status(200).json({ data });
     } catch (error) {

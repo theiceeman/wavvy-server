@@ -1,13 +1,15 @@
-import Web3 from 'web3'
-import { OpenSeaAPI, Network, OpenSeaSDK } from 'opensea-js'
-import Env from '@ioc:Adonis/Core/Env'
-import { OpenSeaAsset } from 'opensea-js/lib/types';
+
+import { Collection, seaportAddress, supportedChains } from '../types';
 import { formatErrorMessage, getRpcUrl } from '../Helpers/utils';
-import { Collection, contractAddress, supportedChains } from '../types';
-import { Request } from '../Helpers/https';
+import { OpenSeaAPI, Network, OpenSeaSDK } from 'opensea-js'
+import { OpenSeaAsset } from 'opensea-js/lib/types';
 import { OrderV2 } from 'opensea-js/lib/orders/types';
-import { parseEther } from 'ethers/lib/utils';
-import { ItemType } from '@opensea/seaport-js/lib/constants';
+import { getClient } from '../Blockchain/ethers';
+import { Seaport } from '@opensea/seaport-js';
+import { Request } from '../Helpers/https';
+import { BigNumber, ethers } from 'ethers';
+import Env from '@ioc:Adonis/Core/Env'
+import Web3 from 'web3'
 
 
 
@@ -71,7 +73,6 @@ export default class OpenSea {
         saleStatus = 'AVAILABLE'
         floorPrice = token.seaport_sell_orders[0].current_price / 10 ** 18;
       }
-      console.log('getTokenMarketplaceData', { data: { tokenId, floorPrice, floorPriceCurrency, saleStatus } })
       return { tokenId, floorPrice, floorPriceCurrency, saleStatus }
 
     } catch (error) {
@@ -99,7 +100,6 @@ export default class OpenSea {
       }
 
       const order: OrderV2 = _order.orders[0]
-      // return order;
       const accountAddress: string = Env.get('WAVVY_WALLET')
 
       const transactionHash = await this.openSeaSdk.fulfillOrder({ order, accountAddress })
@@ -111,26 +111,42 @@ export default class OpenSea {
   }
 
   public async _createPurchase(collectionAddress: any, tokenId: any) {
+    try {
+      const provider = await getClient(this.network)
+      const listings = await this.getTokenListing(collectionAddress, tokenId);
+      const order = listings.orders[0]
+      let { fulfillment_data } = await this.getFulfillmentData(order.order_hash, order.protocol_address);
 
-    let order = {
-      offer: [
-        {
-          itemType: ItemType.ERC721,
-          token: collectionAddress,
-          identifier: tokenId,
+      const OPENSEA_DOMAIN = "opensea.io";
+      const seaport = new Seaport(provider, {
+        overrides: {
+          contractAddress: seaportAddress.matic,
         },
-      ],
-      consideration: [
-        {
-          amount: parseEther("10").toString(),
-          recipient: offerer.address,
-          token: contractAddress[this.network].ERC20_TOKEN
-        },
-      ],
-      // 2.5% fee
-      fees: [{ recipient: zone.address, basisPoints: 250 }],
-    };
+        seaportVersion: "1.5",
+      });
 
+      const { actions } = await seaport.fulfillOrder({
+        order: fulfillment_data.orders[0],
+        accountAddress: Env.get('WAVVY_WALLET'),
+        domain: OPENSEA_DOMAIN,
+      });
+
+      const wallet = new ethers.Wallet(Env.get('WAVVY_PRIVATE_KEY'), provider);
+      const approvalAction = actions[0];
+
+      const transaction = await approvalAction.transactionMethods.buildTransaction()
+      const gasEstimate = await provider.estimateGas(transaction);
+      transaction.gasLimit = gasEstimate;
+      transaction.gasPrice = BigNumber.from(135000000000);
+
+      let res = await wallet.sendTransaction(transaction)
+      if (res.hash)
+        return { ok: true, data: res.hash }
+
+    } catch (error) {
+      console.log({ error })
+      return { ok: false, data: await formatErrorMessage(error) };
+    }
   }
 
   private async getCollectionAsset(collectionAddress) {
@@ -170,7 +186,7 @@ export default class OpenSea {
   }
 
   private async getTokenListing(collectionAddress, tokenId) {
-    let url = `https://api.opensea.io/v2/orders/ethereum/seaport/listings?asset_contract_address=${collectionAddress}&token_ids=${tokenId}&order_by=created_date&order_direction=desc`
+    let url = `https://api.opensea.io/v2/orders/${this.network}/seaport/listings?asset_contract_address=${collectionAddress}&token_ids=${tokenId}&order_by=created_date&order_direction=desc`
 
     let config = {
       headers: {
@@ -184,5 +200,34 @@ export default class OpenSea {
     return response.data.data;
   }
 
+  private async getFulfillmentData(orderHash, protocolAddress) {
+    let url = `https://api.opensea.io/v2/listings/fulfillment_data`;
+
+    let data = {
+      "listing": {
+        "hash": orderHash,
+        "chain": this.network,
+        "protocol_address": protocolAddress
+      },
+      "fulfiller": {
+        "address": "0x10B3fA7Fc49e45CAe6d32A113731A917C4F1755a"
+      }
+    }
+
+    let config = {
+      headers: {
+        "X-API-KEY": Env.get('OPENSEA_API_KEY'),
+      }
+    }
+
+    let response = await Request.post(url, data, config)
+    if (!response.ok)
+      throw new Error('opensea api unavailable!')
+    return response.data.data;
+  }
 
 }
+
+
+
+

@@ -2,10 +2,11 @@ import axios from "axios";
 
 
 export const Request = {
-  post: async (url, data) => {
-    // console.log({url, data})
+  post: async (url, data, config?) => {
+    const headers = config?.headers;
     return await axios.post(url, data, {
       headers: {
+        ...headers,
         "Content-Type": "application/json",
       },
     })
@@ -19,7 +20,6 @@ export const Request = {
 
   get: async (url, config?) => {
     const headers = config?.headers;
-    // console.log(url);
     return await axios.get(url, {
       ...config,
       headers: {

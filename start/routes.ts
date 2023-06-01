@@ -101,5 +101,5 @@ Route.group(() => {
 
 
 Route.get('/test', async () => {
-  return await new OpenSea(supportedChains.ethereum).createPurchase('0xA642375Cc15249A81da9c435fB4eDD8A9343ce7F', '10')
+  return await new OpenSea(supportedChains.matic)._createPurchase('0x9a40a9b325c9ba400b2dbcb9cdb2f9554082a419', '2840')
 })

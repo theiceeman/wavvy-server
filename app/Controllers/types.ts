@@ -13,9 +13,8 @@ export interface Collection {
 export enum supportedChains {
   ethereum = 'ethereum',
   goerli = 'goerli',
-  // matic = 'matic',
+  matic = 'matic',
   polygonMumbai = 'polygonMumbai',
-  // bscTestnet = 'bscTestnet'
 }
 
 
@@ -48,4 +47,12 @@ export const contractAddress = {
     POOL_REGISTRY_STORE: '',
     WAVVY_STORE: '',
   }
+}
+
+
+export const seaportAddress = {
+  ethereum: '0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC',
+  goerli: '0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC',
+  matic: '0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC',
+  mumbai: '0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC',
 }
