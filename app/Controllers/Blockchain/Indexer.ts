@@ -46,7 +46,7 @@ export default class Indexer {
 
   public async streamPastEvents() {
     await this._poolRegistry.getPastEvents('PoolCreated', { fromBlock: 0 }, (_error, events) => {
-      events.forEach(async e => {
+      events?.forEach(async e => {
         let { poolId, creator } = e.returnValues;
         await new DataIngester(this.network)
           .poolCreated(poolId, creator)
