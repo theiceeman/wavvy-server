@@ -42,15 +42,17 @@ export default class PoolFundingsController {
     }
   }
 
-  public async totalFundsInPool(poolId) {
+  public async totalFundsInPool(poolId,network) {
     let amount = 0;
     let data = await Database.from("pool_fundings")
       .where('contract_pool_id', poolId)
+      .where('network', network)
     if (data.length < 1)
       return 0
 
     for (const each of data) {
-      amount += each.amount
+      // console.log({each})
+      amount += Number(each.amount)
     }
     return amount;
 

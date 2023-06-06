@@ -34,7 +34,7 @@ export default class LoanRepaymentsController {
     response
   }: HttpContextContract) {
     try {
-      let data = await Database.from("collections")
+      let data = await Database.from("loan_repayments")
 
 
       response.status(200).json({ data });

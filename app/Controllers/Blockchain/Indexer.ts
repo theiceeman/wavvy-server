@@ -1,12 +1,14 @@
 
 
-import {  getClient } from "./ethers";
+import { getClient } from "./ethers";
 import abiManager from "../../../resources/abi/index"
 import { ethers } from "ethers";
 import DataIngester from "./DataIngester";
 import { getWeb3Socket } from "../Helpers/utils";
 import Env from '@ioc:Adonis/Core/Env'
 import { contractAddress, supportedChains } from "../types";
+import OpenSea from "../Marketplace/OpenSea";
+import WavvyStore from "./contracts/WavvyStore";
 
 /*
 repay loan
@@ -46,6 +48,7 @@ export default class Indexer {
 
   public async streamPastEvents() {
     await this._poolRegistry.getPastEvents('PoolCreated', { fromBlock: 0 }, (_error, events) => {
+      // console.log(`listening on ${this.network} for PoolCreated...`)
       events?.forEach(async e => {
         let { poolId, creator } = e.returnValues;
         await new DataIngester(this.network)
@@ -55,6 +58,7 @@ export default class Indexer {
 
 
     await this._poolRegistry.getPastEvents('PoolFunded', { fromBlock: 0 }, (_error, events) => {
+      // console.log(`listening on ${this.network} for PoolFunded...`)
       events.forEach(async e => {
         let { poolId, amount } = e.returnValues;
         await new DataIngester(this.network)
@@ -64,6 +68,7 @@ export default class Indexer {
 
 
     await this.wavvy.getPastEvents('PurchaseCreated', { fromBlock: 0 }, (_error, events) => {
+      // console.log(`listening on ${this.network} for PurchaseCreated...`)
       events.forEach(async e => {
         let { userAddress, purchaseId, downPayment } = e.returnValues;
         await new DataIngester(this.network)
@@ -113,7 +118,7 @@ export default class Indexer {
 
 
   public async ethersListeners() {
-    console.log(`listening on ${this.network}...`)
+    console.log(`listening on ${this.network} for PoolCreated & PoolFunded...`)
 
     this.poolRegistry.on('PoolCreated', async (_from, _to, value) => {
       let { args } = value
@@ -131,16 +136,21 @@ export default class Indexer {
 
 
   public async PurchaseCreated() {
+    console.log(`listening on ${this.network} for PurchaseCreated...`)
     this.wavvy.events.PurchaseCreated(async (_err, events) => {
+      console.log('found!')
+
       let { userAddress, purchaseId, downPayment } = events.returnValues;
       await new DataIngester(this.network)
         .purchaseCreated(userAddress, purchaseId, downPayment)
     })
 
+
   }
 
 
   public async LoanCreatedListener() {
+    console.log(`listening on ${this.network} for LoanCreated...`)
     this._poolRegistry.events.LoanCreated(async (_err, events) => {
       let { loanId, poolId, borrower, principal } = events.returnValues;
       await new DataIngester(this.network)
@@ -151,6 +161,7 @@ export default class Indexer {
 
 
   public async PurchaseCompletedListener() {
+    console.log(`listening on ${this.network} for PurchaseCompleted...`)
     this.wavvy.events.PurchaseCompleted(async (_err, events) => {
       let { purchaseId } = events.returnValues;
       await new DataIngester(this.network)
@@ -160,6 +171,7 @@ export default class Indexer {
 
 
   public async LoanRepaid() {
+    console.log(`listening on ${this.network} for LoanRepaid...`)
     this.wavvy.events.LoanRepaid(async (_err, events) => {
       let { loanRepaymentId, loanId, amount } = events.returnValues;
       await new DataIngester(this.network)
@@ -170,6 +182,7 @@ export default class Indexer {
 
 
   public async NFTClaimed() {
+    console.log(`listening on ${this.network} for NftClaimed...`)
     this.wavvy.events.NFTClaimed(async (_err, events) => {
       let { purchaseId, claimer } = events.returnValues;
       await new DataIngester(this.network)

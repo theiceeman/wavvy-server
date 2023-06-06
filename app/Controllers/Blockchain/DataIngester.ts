@@ -86,7 +86,7 @@ export default class DataIngester {
         contractPoolId: String(purchase.poolId),
         contractLoanId: String(purchase.loanId),
         escrowAddress: purchase.escrowAddress,
-        tokenAddress: purchase.tokenAddress,
+        tokenAddress: (purchase.tokenAddress).toLowerCase(),
         tokenId: String(purchase.tokenId),
         downPayment: utils.formatEther(downPayment),
         status: 'OPEN'
@@ -113,7 +113,7 @@ export default class DataIngester {
         network: this.network,
         contractLoanId: loanId,
         contractPoolId: poolId,
-        borrower: borrower,
+        borrower: (borrower).toLowerCase(),
         principal: utils.formatEther(principal),
         status: 'open'
       }

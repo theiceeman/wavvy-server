@@ -30,9 +30,9 @@ export function getWeb3Socket(network: supportedChains) {
     case 'ethereum':
       client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MAINNET_SOCKET')));
       break;
-    // case 'matic':
-    //   client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MATIC_SOCKET')));
-    //   break;
+    case 'matic':
+      client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MATIC_SOCKET')));
+      break;
     case 'polygonMumbai':
       client = new Web3(new Web3.providers.WebsocketProvider(Env.get('MUMBAI_SOCKET')));
       break;

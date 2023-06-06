@@ -7,6 +7,8 @@ import User from 'App/Models/User';
 import AlchemyApi from '../Marketplace/AlchemyApi';
 import LoanRepaymentsController from './LoanRepaymentsController';
 import LoansController from './LoansController';
+import Collection from 'App/Models/Collection';
+import OpenSea from '../Marketplace/OpenSea';
 
 export default class PurchasesController {
 
@@ -31,6 +33,32 @@ export default class PurchasesController {
       } else {
         throw new Error("Purchase creation failed!");
       }
+
+    } catch (error) {
+      response.status(400).json({ data: await formatErrorMessage(error) })
+    }
+  }
+
+  // collectionAddress, tokenId
+  public async purchaseFromOpensea({ params, response }: HttpContextContract) {
+    try {
+      const { collectionAddress, tokenId } = params;
+
+      let purchase = await Database.from("purchases")
+        .where('token_address', collectionAddress)
+        .where('token_id', tokenId)
+
+      if (purchase.length < 1) {
+        throw new Error('No purchase created for this token!')
+      }
+
+      let result = await new OpenSea(purchase[purchase.length - 1].network)
+        .createPurchase(collectionAddress, tokenId);
+
+      if (!result.ok)
+        throw new Error('Error purchasing on opensea!')
+
+      response.status(200).json({ data: "Purchase successfull on opensea!" });
 
     } catch (error) {
       response.status(400).json({ data: await formatErrorMessage(error) })
@@ -67,18 +95,19 @@ export default class PurchasesController {
         .where('network', network)
 
       for (const each of purchases) {
-        let { tokenAddress, tokenId, network: tokenNetwork, name } =
+        let { address: tokenAddress, network: tokenNetwork, name } =
           (await Database.from("collections")
-            .where('address', each.tokenAddress)
+            .where('address', each.token_address)
             .where('network', network))[0]
 
+
         let loan = await Database.from("loans")
-          .where('contract_loan_id', purchases[0].contractLoanId)
+          .where('contract_loan_id', each.contract_loan_id)
 
         each.collectionName = name;
         each.tokenAvatar = await new AlchemyApi()
-          .getNftTokenAvatar(tokenAddress, tokenId, tokenNetwork)
-        each.prinicpal = loan[0].principal;
+          .getNftTokenAvatar(tokenAddress, each.token_id, tokenNetwork)
+        each.principal = loan[0].principal;
 
       }
 
@@ -89,7 +118,6 @@ export default class PurchasesController {
   }
 
 
-  // returns: loan_id, token_avatar, token_id, collection_name, principal_remaining, next_due_date
   public async userPurchases({ params, response, request }: HttpContextContract) {
     try {
       const { userId } = params;
@@ -101,6 +129,7 @@ export default class PurchasesController {
 
       let user = await User.query()
         .where("unique_id", userId)
+      // console.log({user})
 
       let loans = await Database.from("loans")
         .where("borrower", user[0].walletAddress)
@@ -111,12 +140,13 @@ export default class PurchasesController {
 
       for (let i = 0; i < loans.length; i++) {
 
-        let { tokenAddress, tokenId, network: tokenNetwork } = (await Purchase.query()
-          .where("contract_loan_id", loans[0].contract_loan_id)
-          .where("network", network))[0]
+        let { tokenAddress, tokenId, network: tokenNetwork } =
+          (await Purchase.query()
+            .where("contract_loan_id", loans[i].contract_loan_id)
+            .where("network", network))[0]
 
         let collection = await Database.from("collections")
-          .where("address", tokenAddress)
+          .where("address", (tokenAddress).toLowerCase())
           .where("network", network)
 
         let amountRepaid = await new LoanRepaymentsController()
@@ -125,14 +155,14 @@ export default class PurchasesController {
         loans[i].tokenId = tokenId
         loans[i].tokenAvatar = await new AlchemyApi()
           .getNftTokenAvatar(tokenAddress, tokenId, tokenNetwork)
+
         loans[i].collectionName = collection[0].name
         loans[i].debt = loans[i].principal - amountRepaid;
         loans[i].nextDueDate = await new LoansController()
-          .userNextDueDateForPayment(loans[0].contract_loan_id, network)
+          .userNextDueDateForPayment(loans[i].contract_loan_id, network)
 
       };
 
-      // return loans
       response.status(200).json({ data: loans });
 
     } catch (error) {

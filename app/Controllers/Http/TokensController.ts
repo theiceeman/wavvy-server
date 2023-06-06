@@ -21,11 +21,12 @@ export default class TokensController {
 
       let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(res[0].address, tokenId, res[0].network)
 
-      let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(res[0].network)
+      let { floorPrice, floorPriceCurrency, saleStatus,loanPrice } = await new OpenSea(res[0].network)
         .getTokenMarketplaceData(res[0].address, tokenId)
 
       let data = {
-        tokenAvatar, floorPrice, floorPriceCurrency, saleStatus, tokenId
+        tokenAvatar, floorPrice, floorPriceCurrency, saleStatus, tokenId,
+        loanPrice
       }
 
       response.status(200).json({ data });

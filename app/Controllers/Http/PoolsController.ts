@@ -71,7 +71,7 @@ export default class PoolsController {
       if (data.length < 1) throw new Error('Invalid pool id')
 
       let totalAmount = await new PoolFundingsController()
-        .totalFundsInPool(data[0].contract_pool_id)
+        .totalFundsInPool(data[0].contract_pool_id, data[0].network)
       data[0].volume = totalAmount
 
       response.status(200).json({ data });
@@ -96,7 +96,8 @@ export default class PoolsController {
 
       for (const each of data) {
         let totalAmount = await new PoolFundingsController()
-          .totalFundsInPool(each.contract_pool_id)
+          .totalFundsInPool(each.contract_pool_id, network)
+        // console.log({ totalAmount })
         each.volume = totalAmount
 
         let totalLoans = await new LoansController().totalLoansFundedByPool(each.contract_pool_id);
@@ -126,7 +127,7 @@ export default class PoolsController {
 
       for (const each of data) {
         let totalAmount = await new PoolFundingsController()
-          .totalFundsInPool(each.contract_pool_id)
+          .totalFundsInPool(each.contract_pool_id, network)
         each.volume = totalAmount
       }
 
@@ -174,7 +175,7 @@ export default class PoolsController {
 
     for (const each of pool) {
       let volumeInPool = await new PoolFundingsController()
-        .totalFundsInPool(each.contract_pool_id)
+        .totalFundsInPool(each.contract_pool_id, network)
       totalVolume += volumeInPool
     }
 

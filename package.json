@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "node ace serve --watch",
+    "dev": " node ace serve --watch",
     "build": "node ace build --production --ignore-ts-errors",
     "build:prod": "yarn run build; node scripts/mv-env.js; node build/ace migration:refresh --force;node build/server.js",
     "start:pm2": "pm2 start build/ecosystem.config.js",

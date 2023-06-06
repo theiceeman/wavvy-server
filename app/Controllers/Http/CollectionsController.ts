@@ -21,11 +21,14 @@ export default class CollectionsController {
         throw new Error('Collection added previously!')
       }
 
-      let collection = await new OpenSea(data.network)
-        .getCollectionDetails(data.address, '1')
+      // let collection = await new OpenSea(data.network)
+      // .getCollectionDetails(data.address, '1')
+
+      let collection = await new AlchemyApi().getCollectionDetails(data.address, 'matic')
+      // console.log({ collection })
 
       let result = await Collection.create({
-        address: data.address,
+        address: (data.address).toLowerCase(),
         network: data.network,
         name: collection.name,
         description: collection.description,
@@ -74,7 +77,7 @@ export default class CollectionsController {
         const tokenId = Math.floor(Math.random() * (20 - 0)) + 0;
         let tokenAvatar = await new AlchemyApi().getNftTokenAvatar(address, String(tokenId), network)
 
-        let { floorPrice, floorPriceCurrency, saleStatus } = await new OpenSea(network)
+        let { floorPrice, floorPriceCurrency, saleStatus, loanPrice } = await new OpenSea(network)
           .getTokenMarketplaceData(address, tokenId)
 
         collection.push({
@@ -82,7 +85,8 @@ export default class CollectionsController {
           tokenAvatar,
           floorPrice,
           floorPriceCurrency,
-          saleStatus
+          saleStatus,
+          loanPrice
         })
       }
       return collection;

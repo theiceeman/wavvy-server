@@ -10,6 +10,7 @@ import { Request } from '../Helpers/https';
 import { BigNumber, ethers } from 'ethers';
 import Env from '@ioc:Adonis/Core/Env'
 import Web3 from 'web3'
+import { formatEther, parseEther } from 'ethers/lib/utils';
 
 
 
@@ -36,13 +37,15 @@ export default class OpenSea {
 
 
   public async getCollectionDetails(tokenAddress, tokenId): Promise<Collection> {
-    const asset: OpenSeaAsset = await this.openSeaApi.getAsset({
-      tokenAddress,
-      tokenId
-    })
-    let collection = asset.collection
+    // const asset: OpenSeaAsset = await this.openSeaApi.getAsset({
+    //   tokenAddress,
+    //   tokenId
+    // })
+    // console.log({asset})
+    // let collection = asset.collection
 
     let apiAsset = await this.getCollectionAsset(tokenAddress);
+    console.log({ apiAsset })
 
     return {
       name: collection.name,
@@ -63,17 +66,21 @@ export default class OpenSea {
 
   public async getTokenMarketplaceData(collectionAddress, tokenId) {
     try {
-      let token = await this.getCollectionToken(collectionAddress, tokenId);
-      let floorPriceCurrency = 'WETH', floorPrice, saleStatus;
+      const listings = await this.getTokenListing(collectionAddress, tokenId);
+      const order = listings.orders[0]
 
-      if (token.orders === null && token.seaport_sell_orders === null) {
+      let floorPriceCurrency, floorPrice, saleStatus;
+      floorPriceCurrency = this.network == 'matic' ? 'MATIC' : 'ETHER'
+
+
+      if (listings.orders.length < 1) {
         saleStatus = 'UNAVAILABLE'
-        floorPrice = (token.collection.stats.seven_day_average_price).toFixed(2)
+        floorPrice = null
       } else {
         saleStatus = 'AVAILABLE'
-        floorPrice = token.seaport_sell_orders[0].current_price / 10 ** 18;
+        floorPrice = formatEther(BigNumber.from(order.current_price))
       }
-      return { tokenId, floorPrice, floorPriceCurrency, saleStatus }
+      return { tokenId, floorPrice, floorPriceCurrency, saleStatus, loanPrice: floorPrice / 2 }
 
     } catch (error) {
       console.log('getTokenMarketplaceData', { error })
@@ -82,35 +89,36 @@ export default class OpenSea {
         floorPrice: null,
         floorPriceCurrency: null,
         saleStatus: 'UNAVAILABLE',
+        loanPrice: null,
       }
     }
   }
 
+
+  // public async createPurchase(collectionAddress: any, tokenId: any) {
+  //   try {
+  //     const _order = await this.openSeaApi.getOrders({
+  //       assetContractAddress: collectionAddress,
+  //       tokenIds: [tokenId],
+  //       side: "ask"
+  //     })
+
+  //     if (_order.orders.length < 1) {
+  //       throw new Error('Token is not available for purchase!')
+  //     }
+
+  //     const order: OrderV2 = _order.orders[0]
+  //     const accountAddress: string = Env.get('WAVVY_WALLET')
+
+  //     const transactionHash = await this.openSeaSdk.fulfillOrder({ order, accountAddress })
+  //     return { ok: true, data: transactionHash }
+  //   } catch (error) {
+  //     return { ok: false, data: await formatErrorMessage(error) };
+  //   }
+
+  // }
 
   public async createPurchase(collectionAddress: any, tokenId: any) {
-    try {
-      const _order = await this.openSeaApi.getOrders({
-        assetContractAddress: collectionAddress,
-        tokenIds: [tokenId],
-        side: "ask"
-      })
-
-      if (_order.orders.length < 1) {
-        throw new Error('Token is not available for purchase!')
-      }
-
-      const order: OrderV2 = _order.orders[0]
-      const accountAddress: string = Env.get('WAVVY_WALLET')
-
-      const transactionHash = await this.openSeaSdk.fulfillOrder({ order, accountAddress })
-      return { ok: true, data: transactionHash }
-    } catch (error) {
-      return { ok: false, data: await formatErrorMessage(error) };
-    }
-
-  }
-
-  public async _createPurchase(collectionAddress: any, tokenId: any) {
     try {
       const provider = await getClient(this.network)
       const listings = await this.getTokenListing(collectionAddress, tokenId);
@@ -135,13 +143,20 @@ export default class OpenSea {
       const approvalAction = actions[0];
 
       const transaction = await approvalAction.transactionMethods.buildTransaction()
+      // console.log({ order, transaction, value: formatEther(BigNumber.from(transaction.value)) }); return;
+
       const gasEstimate = await provider.estimateGas(transaction);
       transaction.gasLimit = gasEstimate;
       transaction.gasPrice = BigNumber.from(135000000000);
 
       let res = await wallet.sendTransaction(transaction)
-      if (res.hash)
-        return { ok: true, data: res.hash }
+      if (!res.hash)
+        throw new Error('purchase failed on opensea!')
+
+      console.log({ hash: res.hash })
+      return { ok: true, data: res.hash }
+
+      // return { ok: true, data: transaction}
 
     } catch (error) {
       console.log({ error })
@@ -184,6 +199,13 @@ export default class OpenSea {
       console.log({ error })
     }
   }
+
+  /*
+  curl --request GET \
+     --url 'https://api.opensea.io/v2/orders/matic/seaport/listings?asset_contract_address=0x2f058542658fdb1254ce599953a7aff7a4e925a4&token_ids=7261&order_by=created_date&order_direction=desc' \
+     --header 'X-API-KEY: d1f0236b140345a9a02d30c07add9a36' \
+     --header 'accept: application/json'
+   */
 
   private async getTokenListing(collectionAddress, tokenId) {
     let url = `https://api.opensea.io/v2/orders/${this.network}/seaport/listings?asset_contract_address=${collectionAddress}&token_ids=${tokenId}&order_by=created_date&order_direction=desc`

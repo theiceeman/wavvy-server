@@ -8,16 +8,29 @@ export default class UsersController {
 
   public async create({ params, response }: HttpContextContract) {
     try {
+
       const { walletAddress } = params;
+
+      let user = await Database.from("users")
+        .where('wallet_address', walletAddress)
+      if (user.length > 0) {
+        response.status(200).json(user[0].unique_id);
+        return;
+      }
+
       const result = await User.create({
         walletAddress: walletAddress
       });
 
       if (result === null) {
         throw new Error("Registration failed!");
-      } else {
-        response.status(200).json({ data: walletAddress });
       }
+      user = await Database.from("users")
+        .where('wallet_address', walletAddress)
+
+
+      response.status(200).json(user[0].unique_id);
+
 
     } catch (error) {
       let data = await formatErrorMessage(error)

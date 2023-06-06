@@ -57,6 +57,8 @@ Route.group(() => {
 
 Route.group(() => {
   Route.post('/create', 'PurchasesController.create')
+  Route.get('/opensea/buy/:collectionAddress/:tokenId', 'PurchasesController.purchaseFromOpensea')
+
   Route.get('/user/projects/:userId', 'PurchasesController.userPurchases')  // my projects
   Route.get('/recent', 'PurchasesController.recent')
   Route.get('/viewAll', 'PurchasesController.viewAll')
@@ -101,5 +103,5 @@ Route.group(() => {
 
 
 Route.get('/test', async () => {
-  return await new OpenSea(supportedChains.matic)._createPurchase('0x9a40a9b325c9ba400b2dbcb9cdb2f9554082a419', '2840')
+  return await new OpenSea(supportedChains.matic).createPurchase('0x2f058542658fdb1254ce599953a7aff7a4e925a4', '7261')
 })

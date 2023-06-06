@@ -9,7 +9,6 @@ import { Collection } from "../types";
 export default class AlchemyApi {
 
 
-  // returns: name, description, avatar, *owner, items, *total_volume, floor_price, website.
   public async getCollectionDetails(address, network): Promise<Collection> {
 
     let url = this.getNftMetadataUrl(network, address, 1)
@@ -34,16 +33,19 @@ export default class AlchemyApi {
         twitterUsername = ''
 
     }
-    // console.log({ collectionName, description, externalUrl, imageUrl, twitterUsername })
-    let items = await this.getNftTotalSupply(address, network);
-    // return items;
+    // let items = await this.getNftTotalSupply(address, network);
+    let items = 'null';
 
     let floorPriceUrl = this.getNftFloorPriceUrl(network, address)
-    // console.log({ res: floorPriceUrl })
     let floorPriceResponse = await Request.get(floorPriceUrl)
-    if (!floorPriceResponse.ok)
-      throw new Error('alchemy api unavailable!')
-    let { floorPrice } = floorPriceResponse.data.data.openSea;
+    let floorPrice;
+    if (!floorPriceResponse.ok) {
+      floorPrice = 'null'
+    }
+    else {
+      let res = floorPriceResponse.data.data.openSea;
+      floorPrice = res.floorPrice
+    }
 
     return {
       name: collectionName,

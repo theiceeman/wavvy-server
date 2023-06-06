@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('unique_id').unique()
       table.string('network')
       table.string('contract_pool_id').notNullable()   //  the pool contract id
-      table.integer('amount').notNullable()
+      table.decimal('amount').notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

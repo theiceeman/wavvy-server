@@ -19,4 +19,11 @@
   "address":"0x792e256416680e2dd774a165cbb23462f3ff0d12",
   "network":"ethereum"
 }
-0xc126ffe27c6e008ba23df678004ffdf2e711520b
+{
+  "address":"0x2f058542658fdb1254ce599953a7aff7a4e925a4",
+  "network":"matic"
+}
+{
+  "address":"0x5066c0934632bcc2902d139d7c875cbd295429f8",
+  "network":"matic"
+}
