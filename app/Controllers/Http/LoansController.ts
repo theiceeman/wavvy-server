@@ -97,10 +97,22 @@ export default class LoansController {
     return volumeBorrowed
   }
 
-  public async totalLoansFundedByPool(contractPoolId) {
+  public async totalNoOfLoansFundedByPool(contractPoolId) {
     let data = await Database.from("loans")
       .where('contract_pool_id', contractPoolId)
     return data.length;
+
+  }
+
+  public async totalAmountOfLoansBorrowedFromPool(contractPoolId) {
+    let amount = 0;
+    let data = await Database.from("loans")
+      .where('contract_pool_id', contractPoolId)
+
+      for (const each of data) {
+        amount += Number(each.principal)
+      }
+    return amount;
 
   }
 

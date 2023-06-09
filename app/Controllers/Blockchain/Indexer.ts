@@ -7,8 +7,6 @@ import DataIngester from "./DataIngester";
 import { getWeb3Socket } from "../Helpers/utils";
 import Env from '@ioc:Adonis/Core/Env'
 import { contractAddress, supportedChains } from "../types";
-import OpenSea from "../Marketplace/OpenSea";
-import WavvyStore from "./contracts/WavvyStore";
 
 /*
 repay loan
@@ -68,7 +66,7 @@ export default class Indexer {
 
 
     await this.wavvy.getPastEvents('PurchaseCreated', { fromBlock: 0 }, (_error, events) => {
-      // console.log(`listening on ${this.network} for PurchaseCreated...`)
+      console.log(`streamed past PurchaseCreated events...`)
       events.forEach(async e => {
         let { userAddress, purchaseId, downPayment } = e.returnValues;
         await new DataIngester(this.network)

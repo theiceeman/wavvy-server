@@ -39,11 +39,11 @@ export default class IndexerProvider {
     // await new Indexer(supportedChains.polygonMumbai).streamPastEvents()
     await new Indexer(supportedChains.matic).streamPastEvents()
 
-    // await new Indexer(supportedChains.polygonMumbai).ethersListeners()
+    await new Indexer(supportedChains.matic).ethersListeners()
     await new Indexer(supportedChains.matic).PurchaseCreated()
 
-    // await new Indexer(supportedChains.polygonMumbai).LoanCreatedListener()
-    // await new Indexer(supportedChains.polygonMumbai).PurchaseCompletedListener()
+    await new Indexer(supportedChains.matic).LoanCreatedListener()
+    await new Indexer(supportedChains.matic).PurchaseCompletedListener()
 
     // await new Indexer(supportedChains.polygonMumbai).LoanRepaid()
     // await new Indexer(supportedChains.polygonMumbai).NFTClaimed()

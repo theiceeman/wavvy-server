@@ -49,7 +49,7 @@ export default class LoanRepaymentsController {
     response,
   }: HttpContextContract) {
     try {
-      let loan = await Database.from("loan_repayments")
+      let loan = await Database.from("loans")
         .where('unique_id', params.loanUniqueId)
 
       let partPayment = await new PoolRegistry(loan[0].network)

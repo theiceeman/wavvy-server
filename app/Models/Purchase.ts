@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { genRandomUuid } from 'App/Controllers/Helpers/utils'
-import { supportedChains } from 'App/Controllers/Blockchain/ethers'
+import { supportedChains } from 'App/Controllers/types'
 
 /*
 contractPoolId

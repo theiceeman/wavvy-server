@@ -59,9 +59,10 @@ Route.group(() => {
   Route.post('/create', 'PurchasesController.create')
   Route.get('/opensea/buy/:collectionAddress/:tokenId', 'PurchasesController.purchaseFromOpensea')
 
-  Route.get('/user/projects/:userId', 'PurchasesController.userPurchases')  // my projects
-  Route.get('/recent', 'PurchasesController.recent')
   Route.get('/viewAll', 'PurchasesController.viewAll')
+  Route.get('/recent', 'PurchasesController.recent')
+  Route.get('/user/projects/:userId', 'PurchasesController.userPurchases')  // my projects
+  Route.get('/:loanId', 'PurchasesController.singlePurchase')
 }).prefix('/purchase')
 
 

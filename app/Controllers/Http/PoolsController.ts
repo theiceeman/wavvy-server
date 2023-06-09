@@ -95,13 +95,17 @@ export default class PoolsController {
         .where('network', network)
 
       for (const each of data) {
-        let totalAmount = await new PoolFundingsController()
-          .totalFundsInPool(each.contract_pool_id, network)
-        // console.log({ totalAmount })
-        each.volume = totalAmount
-
-        let totalLoans = await new LoansController().totalLoansFundedByPool(each.contract_pool_id);
+        let totalLoans = await new LoansController()
+          .totalNoOfLoansFundedByPool(each.contract_pool_id);
         each.noOfLoans = totalLoans
+
+        let totalFundedInPool = await new PoolFundingsController()
+          .totalFundsInPool(each.contract_pool_id, network)
+
+        let totalBorrowedFromPool = await new LoansController()
+        .totalAmountOfLoansBorrowedFromPool(each.contract_pool_id);
+        each.volume = totalFundedInPool - totalBorrowedFromPool
+
       }
 
       response.status(200).json({ data });
