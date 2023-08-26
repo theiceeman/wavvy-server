@@ -1,0 +1,30 @@
+runtime: nodejs
+instance_class: F2
+env: flex
+resources:
+  memory_gb: 4
+
+env_variables:
+  HOST: 0.0.0.0
+  NODE_ENV: development
+  APP_KEY: "-R2r_CP0VnSGaOMSYYv0MpetV1sL_Vu8"
+  DRIVE_DISK: local
+  PG_SSL: false
+  DB_CONNECTION: pg
+  PG_HOST: lallah.db.elephantsql.com
+  PG_PORT: 5432
+  PG_USER: wbmmsuue
+  PG_PASSWORD: T9bcLam5-uGOtqNzifzfRdCVwyIIYVKX
+  PG_DB_NAME: wbmmsuue
+  ALCHEMY_API_KEY: 7J2rN0j4wC9p7SIKZc4ARaVlgvbQiEVT
+  MAINNET_PROVIDER: "https://eth-mainnet.g.alchemy.com/v2/7J2rN0j4wC9p7SIKZc4ARaVlgvbQiEVT"
+  MATIC_PROVIDER: "https://polygon-mainnet.g.alchemy.com/v2/7HeV0Cj2PpD0Kd1D4InJ3B50g_3iecvM"
+  MUMBAI_PROVIDER: "https://polygon-mumbai.g.alchemy.com/v2/oe21CCNseQJ_m_HTQ0Y09671I-CGvbxt"
+  MAINNET_SOCKET: "wss://eth-mainnet.g.alchemy.com/v2/7J2rN0j4wC9p7SIKZc4ARaVlgvbQiEVT"
+  MATIC_SOCKET: "wss://polygon-mainnet.g.alchemy.com/v2/7HeV0Cj2PpD0Kd1D4InJ3B50g_3iecvM"
+  MUMBAI_SOCKET: "wss://polygon-mumbai.g.alchemy.com/v2/oe21CCNseQJ_m_HTQ0Y09671I-CGvbxt"
+  BSC_TESTNET_PROVIDER: "https://data-seed-prebsc-1-s1.binance.org:8545/"
+  WAVVY_WALLET: "0x10B3fA7Fc49e45CAe6d32A113731A917C4F1755a"
+  WAVVY_PRIVATE_KEY: "cf8fba6b7df69b284a7218edc240f26bd66820ad2937957f0f4c88777be268d9"
+  OPENSEA_API_KEY: "d1f0236b140345a9a02d30c07add9a36"
+  APP_SERVER_API: "https://wavvy-server.onrender.com/"

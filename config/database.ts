@@ -46,6 +46,10 @@ const databaseConfig: DatabaseConfig = {
         //   rejectUnauthorized: Env.get('PG_SSL',false) // Enable strict SSL verification
         // },
       },
+      pool: {
+        min: 1,
+        max: 2,
+      },
       migrations: {
         naturalSort: true,
       },

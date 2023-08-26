@@ -1,30 +1,13 @@
 // collections
+
 {
-  "address":"0xf48b45479ba7e121a3542626d5a5f3b07ec5b65d",
-  "network":"ethereum"
-}
-{
-  "address":"0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-  "network":"ethereum"
-}
-{
-  "address":"0xed5af388653567af2f388e6224dc7c4b3241c544",
-  "network":"ethereum"
-}
-{
-  "address":"0x8d9710f0e193d3f95c0723eaaf1a81030dc9116d",
-  "network":"ethereum"
-}
-{
-  "address":"0x792e256416680e2dd774a165cbb23462f3ff0d12",
-  "network":"ethereum"
-}
-{
-  "address":"0x2f058542658fdb1254ce599953a7aff7a4e925a4",
+  "address":"0x9a40a9b325c9ba400b2dbcb9cdb2f9554082a419",
   "network":"matic"
 }
 {
-  "address":"0x5066c0934632bcc2902d139d7c875cbd295429f8",
+  "address":"0x5b3311e5f2a8a6e4425d2cc2b60c99f0bae0c6a7",
   "network":"matic"
 }
 0x882c83f2fe66abddce4f16c49b60445931281047
+0x2f058542658fdb1254ce599953a7aff7a4e925a4
+0x5066c0934632bcc2902d139d7c875cbd295429f8

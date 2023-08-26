@@ -96,9 +96,29 @@ export function convertTimestampToSeconds(timestamp) {
 
 
 // Function to get the ordinal suffix for a number (e.g. "st", "nd", "rd", or "th")
+// function getOrdinalSuffix(number) {
+//   const suffixes = ["th", "st", "nd", "rd"];
+//   const lastDigit = number % 10;
+//   const suffix = suffixes[lastDigit] || "th";
+//   return suffix;
+// }
 function getOrdinalSuffix(number) {
-  const suffixes = ["th", "st", "nd", "rd"];
+  const suffixes = {
+    1: "st",
+    2: "nd",
+    3: "rd",
+  };
+
   const lastDigit = number % 10;
+  const lastTwoDigits = number % 100;
+
+  // Special case for 11, 12, and 13
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 13) {
+    return "th";
+  }
+
+  // Default suffixes based on the last digit
   const suffix = suffixes[lastDigit] || "th";
+
   return suffix;
 }
